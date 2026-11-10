@@ -1,0 +1,135 @@
+---
+// Recovery: readiness ring plus per-muscle recovery bars (19 groups in the
+// app; the four most relevant shown here).
+import Icon from '../Icon.astro';
+import Ring from './Ring.astro';
+
+const muscles = [
+  { name: 'Chest', value: 0.58 },
+  { name: 'Shoulders', value: 0.71 },
+  { name: 'Back', value: 0.88 },
+  { name: 'Quads', value: 0.96 },
+];
+---
+
+<div class="hx-card hx-card--accent accent-recovery card">
+  <div class="row">
+    <Icon name="favorite_border_rounded" size={17} class="title-icon" />
+    <span class="title">Recovery</span>
+    <span class="hx-pill hx-pill--selected chip" style="--accent: var(--hx-success)">CNS · Fresh</span>
+  </div>
+  <div class="body">
+    <div class="ring">
+      <Ring size={96} stroke={7} value={0.82} color="var(--hx-recovery)" />
+      <span class="ring-text"><strong>82%</strong><small>READY</small></span>
+    </div>
+    <ul class="muscles" role="list">
+      {muscles.map((m) => (
+        <li>
+          <span class="name">{m.name}</span>
+          <span class="hx-bar" style={`--value: ${m.value}; --accent: ${m.value < 0.65 ? 'var(--hx-warning)' : 'var(--hx-recovery)'}`}></span>
+          <span class="pct">{Math.round(m.value * 100)}%</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <p class="advice">Chest is still recovering from Monday. Today suits legs or pulling.</p>
+</div>
+
+<style>
+  .card {
+    display: grid;
+    gap: 16px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .row :global(.title-icon) {
+    color: var(--hx-primary);
+  }
+
+  .title {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .chip {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .ring {
+    position: relative;
+    flex: none;
+  }
+
+  .ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+  }
+
+  .ring-text strong {
+    font-family: var(--hx-font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--hx-on-surface);
+  }
+
+  .ring-text small {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--hx-secondary);
+  }
+
+  .muscles {
+    flex: 1;
+    display: grid;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .muscles li {
+    display: grid;
+    grid-template-columns: 72px 1fr 36px;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .name {
+    color: var(--hx-on-surface-variant);
+    font-weight: 500;
+  }
+
+  .pct {
+    text-align: right;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .advice {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+</style>

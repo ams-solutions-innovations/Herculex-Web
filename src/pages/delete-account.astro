@@ -1,0 +1,51 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { site } from '../data/site';
+---
+
+<LegalLayout
+  title="Delete your account"
+  description="How to permanently delete your Herculex account and the data stored with it."
+>
+  <p>
+    You can delete your Herculex account at any time. Deletion is permanent: your account and everything stored
+    in the cloud for it are removed and cannot be recovered. Herculex is published by {site.publisher}.
+  </p>
+
+  <h2>Delete it in the app</h2>
+  <ol>
+    <li>Open Herculex and go to <strong>Profile → Settings → Account</strong>.</li>
+    <li>Tap <strong>Delete Account</strong> and confirm.</li>
+  </ol>
+  <p>
+    The deletion happens immediately. The app then wipes the data stored on that device as well. The same steps
+    work in the web app at <a href={site.appUrl}>{site.appHost}</a>.
+  </p>
+
+  <h2>Can't open the app?</h2>
+  <p>
+    Email <a href={`mailto:${site.supportEmail}?subject=Delete%20my%20Herculex%20account`}>{site.supportEmail}</a>
+    from the address you signed up with and ask us to delete your account. We will confirm and complete the
+    deletion within 30 days, as the GDPR requires.
+  </p>
+
+  <h2>What is deleted</h2>
+  <ul>
+    <li>Your account and sign-in details.</li>
+    <li>Workouts, sets, templates and programs.</li>
+    <li>Food logs, custom foods, recipes and nutrition targets.</li>
+    <li>Fasting sessions, body measurements and cycle records.</li>
+    <li>Physique goals, check-ins and weekly reports.</li>
+    <li>Any photos stored for your account.</li>
+  </ul>
+
+  <h2>What is kept</h2>
+  <p>
+    If you added a barcode product to the shared food catalogue, the product information (name and nutrition
+    values) stays available to other users, but it is no longer linked to you. Nothing else is kept.
+  </p>
+  <p>
+    Data that lives only on your phone — such as Apple Health or Health Connect data and progress photos — is
+    removed when the app wipes the device, or when you uninstall Herculex.
+  </p>
+</LegalLayout>

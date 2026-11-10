@@ -1,0 +1,128 @@
+---
+// RemainingCaloriesCard (full-width variant): Goal − Food + Exercise.
+import Icon from '../Icon.astro';
+
+const goal = 2400;
+const food = 1640;
+const exercise = 420;
+const remaining = goal - food + exercise;
+const consumed = food / (goal + exercise);
+---
+
+<div class="hx-card hx-card--accent card" style="--accent: var(--hx-kcal)">
+  <div class="row">
+    <Icon name="local_fire_department_outlined" size={17} class="title-icon" />
+    <span class="title">Calories Remaining</span>
+    <strong class="value">{remaining.toLocaleString('en-US')}</strong>
+    <span class="unit">kcal</span>
+  </div>
+  <div class="bar" style={`--value: ${consumed}`}></div>
+  <div class="equation">
+    <span class="term"><small>GOAL</small><b style="color: var(--hx-secondary)">{goal.toLocaleString('en-US')}</b></span>
+    <span class="op">−</span>
+    <span class="term"><small>FOOD</small><b style="color: var(--hx-protein)">{food.toLocaleString('en-US')}</b></span>
+    <span class="op">+</span>
+    <span class="term"><small>EXERCISE</small><b class="exercise">{exercise}</b></span>
+  </div>
+</div>
+
+<style>
+  .card {
+    padding: 16px 20px 18px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .row :global(.title-icon) {
+    color: var(--hx-primary);
+  }
+
+  .title {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .value {
+    font-family: var(--hx-font-display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-kcal);
+  }
+
+  .unit {
+    padding-top: 4px;
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .bar {
+    --value: 0;
+    position: relative;
+    height: 6px;
+    margin-top: 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--hx-surface-variant) 50%, transparent);
+    overflow: hidden;
+  }
+
+  .bar::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--value) * 100%);
+    border-radius: inherit;
+    background: var(--hx-kcal);
+  }
+
+  .equation {
+    display: flex;
+    align-items: flex-end;
+    margin-top: 12px;
+  }
+
+  .term {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .term small {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: var(--hx-secondary);
+  }
+
+  .term b {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .term .exercise {
+    color: #30d158;
+  }
+
+  .op {
+    padding: 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--hx-secondary);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .term .exercise {
+      color: #34c759;
+    }
+  }
+</style>

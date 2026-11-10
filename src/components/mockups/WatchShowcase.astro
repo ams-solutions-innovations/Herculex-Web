@@ -1,0 +1,394 @@
+---
+import Icon from '../Icon.astro';
+import AppleWatchFrame from './AppleWatchFrame.astro';
+import AndroidWatchFrame from './AndroidWatchFrame.astro';
+import AppleWatchScreen from './AppleWatchScreen.astro';
+import AndroidWatchScreen from './AndroidWatchScreen.astro';
+
+interface Props {
+  initialPlatform?: 'apple' | 'android';
+  initialScreen?: 'set_logger' | 'rest_timer' | 'active_workout' | 'home' | 'fasting';
+  showDetails?: boolean;
+}
+
+const {
+  initialPlatform = 'apple',
+  initialScreen = 'set_logger',
+  showDetails = true,
+} = Astro.props;
+
+const screenTabs = [
+  { id: 'set_logger', label: 'Set Logger', icon: 'fitness_center_rounded' },
+  { id: 'rest_timer', label: 'Rest Timer', icon: 'timer_outlined' },
+  { id: 'active_workout', label: 'Workout Overview', icon: 'format_list_bulleted_rounded' },
+  { id: 'home', label: 'Home & Tiles', icon: 'dashboard_rounded' },
+  { id: 'fasting', label: 'Fasting Timer', icon: 'timelapse' },
+];
+---
+
+<div class="watch-showcase">
+  <!-- Controls Area -->
+  <div class="showcase-controls">
+    <!-- Platform Switcher: Apple Watch vs Android Watch -->
+    <div class="platform-switcher" role="tablist" aria-label="Smartwatch platform">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={initialPlatform === 'apple' ? 'true' : 'false'}
+        class:list={['platform-btn', { active: initialPlatform === 'apple' }]}
+        data-watch-platform-target="apple"
+      >
+        <Icon name="phone_iphone" size={17} class="platform-icon" />
+        <span>Apple Watch</span>
+        <span class="platform-badge">watchOS 10+</span>
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        aria-selected={initialPlatform === 'android' ? 'true' : 'false'}
+        class:list={['platform-btn', { active: initialPlatform === 'android' }]}
+        data-watch-platform-target="android"
+      >
+        <Icon name="android" size={17} class="platform-icon" />
+        <span>Android Watch</span>
+        <span class="platform-badge">Wear OS 4+</span>
+      </button>
+    </div>
+
+    <!-- Screen Tabs (Set Logger, Rest Timer, Workout, Home, Fasting) -->
+    <div class="screen-switcher" role="tablist" aria-label="Smartwatch screen preview">
+      {screenTabs.map((tab) => (
+        <button
+          type="button"
+          role="tab"
+          aria-selected={initialScreen === tab.id ? 'true' : 'false'}
+          class:list={['screen-tab', { active: initialScreen === tab.id }]}
+          data-watch-screen-target={tab.id}
+        >
+          <Icon name={tab.icon} size={15} />
+          <span>{tab.label}</span>
+        </button>
+      ))}
+    </div>
+
+    <!-- Interactive Hint Banner -->
+    <div class="showcase-hint">
+      <span class="hint-pulse"></span>
+      <span class="hint-text">
+        <strong>Interactive Simulator:</strong> Tap the <kbd>−/+</kbd> buttons on the watch display, complete sets, and test rest timer haptics in real time.
+      </span>
+    </div>
+  </div>
+
+  <!-- Interactive Device Stage -->
+  <div class="showcase-stage">
+    <!-- Apple Watch Container -->
+    <div
+      class:list={['device-container', 'apple-container', { active: initialPlatform === 'apple' }]}
+      data-watch-device="apple"
+    >
+      <AppleWatchFrame label="Interactive Apple Watch simulation for Herculex">
+        <AppleWatchScreen activeScreen={initialScreen} />
+      </AppleWatchFrame>
+    </div>
+
+    <!-- Android Wear OS Container -->
+    <div
+      class:list={['device-container', 'android-container', { active: initialPlatform === 'android' }]}
+      data-watch-device="android"
+    >
+      <AndroidWatchFrame label="Interactive Android Wear OS Watch simulation for Herculex">
+        <AndroidWatchScreen activeScreen={initialScreen} />
+      </AndroidWatchFrame>
+    </div>
+  </div>
+
+  {showDetails && (
+    <div class="platform-meta">
+      <!-- Apple Watch description -->
+      <div
+        class:list={['platform-desc', { active: initialPlatform === 'apple' }]}
+        data-platform-desc="apple"
+      >
+        <div class="meta-tag">
+          <Icon name="verified_user_outlined" size={15} />
+          <span>SwiftUI Native · Apple Watch Series 4 through 10 &amp; Ultra</span>
+        </div>
+        <p class="meta-text">
+          Features hardware Digital Crown rotary tuning for weights and reps, Smart Stack glanceable widgets,
+          and continuous WorkoutKit/HealthKit heart rate tracking that never leaves your device.
+        </p>
+      </div>
+
+      <!-- Android Watch description -->
+      <div
+        class:list={['platform-desc', { active: initialPlatform === 'android' }]}
+        data-platform-desc="android"
+      >
+        <div class="meta-tag">
+          <Icon name="verified_user_outlined" size={15} />
+          <span>Jetpack Compose for Wear · Samsung Galaxy Watch &amp; Google Pixel Watch</span>
+        </div>
+        <p class="meta-text">
+          Engineered with Samsung One UI 9 Watch ergonomics, rotary bezel SetBezel arcs, custom Wear OS Tiles,
+          and tactile haptic pulses that let you train without looking at your wrist.
+        </p>
+      </div>
+    </div>
+  )}
+</div>
+
+<script is:inline src="/scripts/watch-showcase.js" defer></script>
+
+<style>
+  .watch-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ── Controls ── */
+  .showcase-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  /* Platform Switcher Pill */
+  .platform-switcher {
+    display: inline-flex;
+    padding: 6px;
+    background: #111824;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--hx-radius-pill, 999px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    max-width: 100%;
+  }
+
+  .platform-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: var(--hx-radius-pill, 999px);
+    background: transparent;
+    border: none;
+    color: var(--hx-on-surface-variant, #94a3b8);
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .platform-btn:hover {
+    color: #ffffff;
+  }
+
+  .platform-btn.active {
+    background: linear-gradient(135deg, #0a84ff, #0066cc);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(10, 132, 255, 0.45);
+  }
+
+  .platform-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.16);
+    letter-spacing: 0.3px;
+  }
+
+  /* Screen Switcher */
+  .screen-switcher {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(22, 30, 46, 0.7);
+    padding: 5px;
+    border-radius: var(--hx-radius-pill, 999px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .screen-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--hx-radius-pill, 999px);
+    background: transparent;
+    border: none;
+    color: var(--hx-secondary, #94a3b8);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .screen-tab:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .screen-tab.active {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  /* Interactive Hint */
+  .showcase-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(10, 132, 255, 0.08);
+    border: 1px solid rgba(10, 132, 255, 0.2);
+    font-size: 11.5px;
+    color: #cbd5e1;
+  }
+
+  .hint-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #30d158;
+    box-shadow: 0 0 8px #30d158;
+    animation: hx-pulse 1.8s infinite;
+  }
+
+  .showcase-hint kbd {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 11px;
+    color: #ffffff;
+  }
+
+  /* ── Device Stage ── */
+  .showcase-stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 470px;
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .device-container {
+    display: none;
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .device-container.active {
+    display: flex;
+    justify-content: center;
+    opacity: 1;
+    transform: scale(1);
+    animation: hx-device-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes hx-device-appear {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* ── Platform Meta ── */
+  .platform-meta {
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  .platform-desc {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px 24px;
+    border-radius: 20px;
+    background: rgba(22, 30, 46, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .platform-desc.active {
+    display: flex;
+    animation: apple-appear 0.25s ease forwards;
+  }
+
+  .meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 5px;
+  }
+
+  .meta-text {
+    font-size: 14px;
+    color: #94a3b8;
+    max-width: 580px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .platform-switcher {
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .platform-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .platform-badge {
+      display: none;
+    }
+
+    .screen-switcher {
+      border-radius: 16px;
+      gap: 4px;
+    }
+
+    .screen-tab {
+      padding: 5px 9px;
+      font-size: 11px;
+    }
+
+    .showcase-hint {
+      font-size: 10.5px;
+      text-align: center;
+    }
+
+    .showcase-stage {
+      min-height: 420px;
+      transform: scale(0.92);
+      margin: -20px 0;
+    }
+  }
+</style>

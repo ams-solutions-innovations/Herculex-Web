@@ -1,0 +1,136 @@
+---
+// Adaptive TDEE, drawn like the dashboard trend cards: a curved 2.5px line
+// with a 15% area fill and a dashed reference line.
+import Icon from '../Icon.astro';
+
+// Smoothed weight trend over four weeks (kg), sampled every few days.
+const trend = [82.4, 82.3, 82.1, 82.15, 81.9, 81.8, 81.65, 81.6, 81.4, 81.35, 81.2];
+const width = 320;
+const height = 72;
+const min = 80.8;
+const max = 82.6;
+const points = trend.map((kg, i) => [
+  (i / (trend.length - 1)) * width,
+  height - ((kg - min) / (max - min)) * height,
+]);
+
+// Catmull-Rom → cubic Bézier for a smooth curve.
+let line = `M${points[0][0].toFixed(1)} ${points[0][1].toFixed(1)}`;
+for (let i = 0; i < points.length - 1; i++) {
+  const p0 = points[Math.max(0, i - 1)];
+  const p1 = points[i];
+  const p2 = points[i + 1];
+  const p3 = points[Math.min(points.length - 1, i + 2)];
+  const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+  const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+  line += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+}
+const area = `${line} L${width} ${height} L0 ${height} Z`;
+const targetY = height - ((81.0 - min) / (max - min)) * height;
+---
+
+<div class="hx-card card">
+  <div class="row">
+    <Icon name="insights_rounded" size={17} class="title-icon" />
+    <span class="title">Maintenance estimate</span>
+    <span class="hx-pill hx-pill--selected chip" style="--accent: var(--hx-success)">High confidence</span>
+  </div>
+  <p class="value"><strong>2,640</strong> <span>kcal / day</span></p>
+  <p class="note">Measured from 28 days of food logs and 11 weigh-ins. Recalibrated weekly.</p>
+  <svg class="spark" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" aria-hidden="true">
+    <path d={area} class="area" />
+    <line x1="0" x2={width} y1={targetY} y2={targetY} class="target" />
+    <path d={line} class="line" />
+  </svg>
+  <div class="legend">
+    <span>Weight trend · −1.2 kg</span>
+    <span>Goal 81.0 kg</span>
+  </div>
+</div>
+
+<style>
+  .card {
+    display: grid;
+    gap: 6px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .row :global(.title-icon) {
+    color: var(--hx-primary);
+  }
+
+  .title {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .chip {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .value {
+    margin-top: 6px;
+  }
+
+  .value strong {
+    font-family: var(--hx-font-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .value span {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .note {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .spark {
+    width: 100%;
+    height: 72px;
+    margin-top: 10px;
+    overflow: visible;
+  }
+
+  .area {
+    fill: color-mix(in srgb, var(--hx-nutrition) 15%, transparent);
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--hx-nutrition);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .target {
+    stroke: var(--hx-secondary);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--hx-secondary);
+  }
+</style>

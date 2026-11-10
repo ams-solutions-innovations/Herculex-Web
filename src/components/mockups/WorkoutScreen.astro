@@ -1,0 +1,336 @@
+---
+// The active workout screen (active_workout_view.dart + active_exercise_card):
+// stats bar, exercise cards with the set table, and the Exercise / Finish bar.
+import Icon from '../Icon.astro';
+import NavBar from './NavBar.astro';
+
+type SetRow = { kg: string; reps: string; rpe: string; done: boolean };
+const exercises: { slug: string; name: string; meta: string; last: string; sets: SetRow[] }[] = [
+  {
+    slug: 'barbell-bench-press',
+    name: 'Barbell Bench Press',
+    meta: 'Chest • Barbell',
+    last: 'Last: 80 kg × 8 @ RPE 8',
+    sets: [
+      { kg: '80', reps: '8', rpe: '7', done: true },
+      { kg: '80', reps: '8', rpe: '8', done: true },
+      { kg: '82.5', reps: '6', rpe: '', done: false },
+    ],
+  },
+  {
+    slug: 'barbell-back-squat',
+    name: 'Barbell Back Squat',
+    meta: 'Quads • Barbell',
+    last: 'Last: 100 kg × 5',
+    sets: [
+      { kg: '102.5', reps: '5', rpe: '', done: false },
+      { kg: '102.5', reps: '5', rpe: '', done: false },
+    ],
+  },
+];
+---
+
+<div class="workout">
+  <header class="head">
+    <Icon name="arrow_back_ios_new_rounded" size={18} class="muted" />
+    <span class="title">Full Body A</span>
+    <Icon name="edit_rounded" size={16} class="accent" />
+    <span class="head-icons">
+      <Icon name="group_rounded" size={22} />
+      <Icon name="settings_rounded" size={22} />
+      <Icon name="close_rounded" size={22} />
+    </span>
+  </header>
+
+  <div class="stats">
+    <div>
+      <span class="stat-label"><Icon name="timer_outlined" size={12} class="time" />TIME</span>
+      <span class="stat-value">18:42</span>
+    </div>
+    <span class="divider"></span>
+    <div>
+      <span class="stat-label"><Icon name="check_circle_rounded" size={12} class="sets" />SETS</span>
+      <span class="stat-value">2</span>
+    </div>
+    <span class="divider"></span>
+    <div>
+      <span class="stat-label"><Icon name="fitness_center_rounded" size={12} class="volume" />VOLUME</span>
+      <span class="stat-value">1,280 kg</span>
+    </div>
+  </div>
+
+  {exercises.map((ex) => (
+    <article class="exercise">
+      <div class="ex-head">
+        <img class="artwork" src={`/images/exercises/${ex.slug}.webp`} alt="" width="32" height="32" loading="lazy" />
+        <div>
+          <p class="ex-name">{ex.name}</p>
+          <p class="ex-meta">{ex.meta}</p>
+        </div>
+        <Icon name="more_vert" size={20} class="muted more" />
+      </div>
+      <p class="last">{ex.last}</p>
+      <div class="set-row header">
+        <span>SET</span><span>KG</span><span>REPS</span><span>RPE</span><span></span>
+      </div>
+      {ex.sets.map((set, i) => (
+        <div class:list={['set-row', { done: set.done }]}>
+          <span class="set-no">{i + 1}</span>
+          <span class:list={['field', { hint: !set.done }]}>{set.kg}</span>
+          <span class:list={['field', { hint: !set.done }]}>{set.reps}</span>
+          <span class="field rpe">{set.rpe || '–'}</span>
+          <span class:list={['check', { on: set.done }]}>{set.done && <Icon name="check_rounded" size={18} />}</span>
+        </div>
+      ))}
+    </article>
+  ))}
+</div>
+
+<div class="actions">
+  <span class="btn secondary"><Icon name="add_rounded" size={20} />Exercise</span>
+  <span class="btn primary"><Icon name="flag_rounded" size={20} />Finish</span>
+</div>
+
+<NavBar selected={2} />
+
+<style>
+  .workout {
+    display: grid;
+    gap: 0;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 16px;
+    color: var(--hx-on-surface);
+  }
+
+  .head :global(.muted) {
+    color: var(--hx-secondary);
+  }
+
+  .head :global(.accent) {
+    color: var(--hx-primary-text);
+  }
+
+  .title {
+    margin-left: 4px;
+    font-family: var(--hx-font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .head-icons {
+    display: flex;
+    gap: 14px;
+    margin-left: auto;
+    color: var(--hx-secondary);
+  }
+
+  .stats {
+    display: flex;
+    align-items: center;
+    margin: 8px 16px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: var(--hx-surface-lowest);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .stats > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .divider {
+    width: 1px;
+    height: 28px;
+    background: color-mix(in srgb, var(--hx-outline-variant) 60%, transparent);
+  }
+
+  .stat-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--hx-secondary);
+  }
+
+  .stat-label :global(.time) {
+    color: color-mix(in srgb, var(--hx-primary) 85%, transparent);
+  }
+
+  .stat-label :global(.sets) {
+    color: #ff9800;
+  }
+
+  .stat-label :global(.volume) {
+    color: #26c6da;
+  }
+
+  .stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .exercise {
+    margin: 8px 16px;
+    padding: 16px;
+    border-radius: 20px;
+    background: var(--hx-surface-lowest);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 40%, transparent);
+  }
+
+  .ex-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .artwork {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background: #fff;
+    object-fit: cover;
+  }
+
+  .ex-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .ex-meta {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .ex-head :global(.more) {
+    margin-left: auto;
+    color: var(--hx-secondary);
+  }
+
+  .last {
+    margin: 8px 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--hx-primary-text);
+  }
+
+  .set-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 1fr 40px 44px;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 4px;
+    border-radius: 8px;
+  }
+
+  .set-row + .set-row {
+    margin-top: 4px;
+  }
+
+  .set-row.header {
+    padding-block: 0 2px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-align: center;
+    color: var(--hx-secondary);
+  }
+
+  .set-row.done {
+    background: color-mix(in srgb, var(--hx-primary) 8%, transparent);
+  }
+
+  .set-no {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--hx-on-surface-variant);
+  }
+
+  .field {
+    display: grid;
+    place-items: center;
+    height: 34px;
+    border-radius: 24px;
+    background: var(--hx-surface-variant);
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .field.hint {
+    color: var(--hx-tertiary);
+  }
+
+  .field.rpe {
+    background: color-mix(in srgb, var(--hx-rpe) 15%, transparent);
+  }
+
+  .check {
+    display: grid;
+    place-items: center;
+    justify-self: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--hx-outline);
+    color: #fff;
+  }
+
+  .check.on {
+    background: var(--hx-primary);
+    box-shadow: none;
+  }
+
+  .actions {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 120px; /* 86 above the safe inset */
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 32px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.15);
+  }
+
+  .btn.secondary {
+    background: var(--hx-surface-container);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 60%, transparent);
+    color: var(--hx-on-surface);
+  }
+
+  .btn.primary {
+    background: var(--hx-primary);
+    color: var(--hx-on-primary);
+  }
+</style>

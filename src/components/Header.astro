@@ -1,0 +1,182 @@
+---
+import Icon from './Icon.astro';
+import LogoMark from './LogoMark.astro';
+import { nav, site } from '../data/site';
+---
+
+<header class="site-header">
+  <div class="container">
+    <nav class="bar hx-frosted" aria-label="Main">
+      <a class="brand" href="/" aria-label="Herculex home">
+        <LogoMark size={34} class="brand-mark" />
+        <span class="brand-name">Herculex</span>
+      </a>
+
+      <ul class="links" role="list">
+        {nav.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+
+      <div class="actions">
+        <a class="hx-btn hx-btn--primary hx-btn--small" href={site.appUrl}>
+          Open web app
+        </a>
+        <details class="menu">
+          <summary aria-label="Menu">
+            <Icon name="menu_rounded" class="icon-open" />
+            <Icon name="close_rounded" class="icon-close" />
+          </summary>
+          <ul class="menu-panel hx-glass" role="list">
+            {nav.map((item) => (
+              <li><a href={item.href}>{item.label}</a></li>
+            ))}
+          </ul>
+        </details>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Served as a file (not inlined) so the CSP can stay at script-src 'self'. -->
+<script is:inline src="/scripts/menu.js" defer></script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: 12px;
+  }
+
+  /* HxNavBar: one frosted pill, 60 tall, 8px horizontal inner padding. */
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 60px;
+    padding: 0 8px 0 16px;
+    border-radius: var(--hx-radius-pill);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--hx-on-surface);
+    text-decoration: none;
+  }
+
+  .brand :global(.brand-mark) {
+    color: var(--hx-primary);
+  }
+
+  .brand-name {
+    font-family: var(--hx-font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .links {
+    display: none;
+    gap: 4px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    display: block;
+    padding: 8px 14px;
+    border-radius: var(--hx-radius-pill);
+    color: var(--hx-on-surface-variant);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--hx-fast) ease, background-color var(--hx-fast) ease;
+  }
+
+  .links a:hover {
+    color: var(--hx-on-surface);
+    background: color-mix(in srgb, var(--hx-on-surface) 8%, transparent);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .menu {
+    position: relative;
+  }
+
+  .menu summary {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--hx-on-surface);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu :global(.icon-close),
+  .menu[open] :global(.icon-open) {
+    display: none;
+  }
+
+  .menu[open] :global(.icon-close) {
+    display: block;
+  }
+
+  .menu-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+    min-width: 220px;
+    padding: 8px;
+    border-radius: var(--hx-radius-lg);
+    list-style: none;
+  }
+
+  .menu-panel a {
+    display: block;
+    padding: 12px 16px;
+    border-radius: var(--hx-radius-sm);
+    color: var(--hx-on-surface);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .menu-panel a:hover {
+    background: color-mix(in srgb, var(--hx-on-surface) 8%, transparent);
+  }
+
+  @media (min-width: 900px) {
+    .links {
+      display: flex;
+    }
+
+    .actions {
+      margin-left: 0;
+    }
+
+    .menu {
+      display: none;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .brand-name {
+      display: none;
+    }
+  }
+</style>

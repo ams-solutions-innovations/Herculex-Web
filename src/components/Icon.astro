@@ -1,0 +1,74 @@
+---
+// Material Icons (the legacy font Flutter's `Icons.*` uses), inlined as SVG at
+// build time. Names are written the Flutter way so they match the app 1:1:
+//   fitness_center_rounded → Icons.fitness_center_rounded → ic:round-fitness-center
+//   timer_outlined         → Icons.timer_outlined         → ic:outline-timer
+//   egg_alt                → Icons.egg_alt                → ic:baseline-egg-alt
+import iconSet from '@iconify-json/ic/icons.json';
+
+interface Props {
+  /** Flutter icon name, e.g. "fitness_center_rounded". */
+  name: string;
+  size?: number;
+  class?: string;
+  /** Accessible name. Omit for decorative icons. */
+  label?: string;
+}
+
+interface IconData {
+  body: string;
+  width?: number;
+  height?: number;
+}
+
+interface IconSet {
+  icons: Record<string, IconData>;
+  aliases?: Record<string, { parent: string }>;
+  width?: number;
+  height?: number;
+}
+
+const set = iconSet as IconSet;
+
+const variants: [suffix: string, prefix: string][] = [
+  ['_rounded', 'round'],
+  ['_outlined', 'outline'],
+  ['_sharp', 'sharp'],
+];
+
+function iconifyName(flutterName: string): string {
+  for (const [suffix, prefix] of variants) {
+    if (flutterName.endsWith(suffix)) {
+      return `${prefix}-${flutterName.slice(0, -suffix.length).replaceAll('_', '-')}`;
+    }
+  }
+  return `baseline-${flutterName.replaceAll('_', '-')}`;
+}
+
+function resolve(name: string): IconData | undefined {
+  const icon = set.icons[name];
+  if (icon) return icon;
+  const alias = set.aliases?.[name];
+  return alias ? resolve(alias.parent) : undefined;
+}
+
+const { name, size = 24, class: className, label } = Astro.props;
+const icon = resolve(iconifyName(name));
+if (!icon) throw new Error(`Unknown Material Icon: Icons.${name} (looked up "${iconifyName(name)}")`);
+const width = icon.width ?? set.width ?? 24;
+const height = icon.height ?? set.height ?? 24;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={`0 0 ${width} ${height}`}
+  width={size}
+  height={size}
+  class={className}
+  fill="currentColor"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+  set:html={icon.body}
+/>

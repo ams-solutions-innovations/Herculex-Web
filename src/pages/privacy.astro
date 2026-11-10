@@ -1,0 +1,16 @@
+---
+import { getEntry, render } from 'astro:content';
+import LegalLayout from '../layouts/LegalLayout.astro';
+
+const entry = await getEntry('legal', 'privacy');
+if (!entry) throw new Error('src/content/legal/privacy.md is missing — run `npm run sync-legal`.');
+const { Content } = await render(entry);
+---
+
+<LegalLayout
+  title={entry.data.title}
+  lastUpdated={entry.data.lastUpdated}
+  description="How Herculex collects, stores and protects your training, nutrition and health data under the GDPR."
+>
+  <Content />
+</LegalLayout>

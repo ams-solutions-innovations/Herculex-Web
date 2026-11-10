@@ -1,0 +1,16 @@
+---
+import { getEntry, render } from 'astro:content';
+import LegalLayout from '../layouts/LegalLayout.astro';
+
+const entry = await getEntry('legal', 'terms');
+if (!entry) throw new Error('src/content/legal/terms.md is missing — run `npm run sync-legal`.');
+const { Content } = await render(entry);
+---
+
+<LegalLayout
+  title={entry.data.title}
+  lastUpdated={entry.data.lastUpdated}
+  description="The terms that apply when you use Herculex, including the medical and health disclaimer."
+>
+  <Content />
+</LegalLayout>

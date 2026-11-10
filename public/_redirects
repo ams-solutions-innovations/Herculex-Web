@@ -1,0 +1,8 @@
+# Short links into the web app (app.herculex.app, the Flutter web build).
+/app      https://app.herculex.app          302
+/login    https://app.herculex.app/sign-in  302
+/sign-in  https://app.herculex.app/sign-in  302
+
+# Common legal URL variants.
+/privacy-policy  /privacy  301
+/tos             /terms    301

@@ -1,0 +1,265 @@
+---
+// A 320 × 390 Apple Watch frame with realistic titanium chassis,
+// digital crown, side button, status bar, and curved OLED screen.
+interface Props {
+  class?: string;
+  label?: string;
+}
+
+const { class: className, label = 'Herculex on Apple Watch' } = Astro.props;
+---
+
+<figure class:list={['apple-watch-frame', className]} role="img" aria-label={label}>
+  <!-- Top strap hint -->
+  <div class="strap strap--top" aria-hidden="true">
+    <div class="strap-connector"></div>
+  </div>
+
+  <!-- Watch hardware chassis -->
+  <div class="case">
+    <!-- Digital Crown on right -->
+    <div class="crown" aria-hidden="true">
+      <span class="crown-ring"></span>
+    </div>
+
+    <!-- Side Button on right -->
+    <div class="side-button" aria-hidden="true"></div>
+
+    <!-- Speaker cutouts on left -->
+    <div class="speaker-slit" aria-hidden="true"></div>
+
+    <!-- Screen Bezel & Display -->
+    <div class="screen">
+      <!-- Curved glass reflection highlight -->
+      <div class="glass-glare" aria-hidden="true"></div>
+
+      <!-- watchOS Status Bar -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="time">9:41</span>
+        <div class="status-indicators">
+          <span class="workout-pill">
+            <span class="pulse-dot"></span>
+            <span class="status-icon">♥</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Watch Screen Content Slot -->
+      <div class="content">
+        <slot />
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom strap hint -->
+  <div class="strap strap--bottom" aria-hidden="true">
+    <div class="strap-connector"></div>
+  </div>
+</figure>
+
+<style>
+  .apple-watch-frame {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    user-select: none;
+    filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.65));
+  }
+
+  /* Straps */
+  .strap {
+    position: relative;
+    width: 170px;
+    height: 38px;
+    background: linear-gradient(to right, #12151c, #1f242e 30%, #262c38 50%, #1f242e 70%, #12151c);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .strap--top {
+    margin-bottom: -10px;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
+  }
+
+  .strap--bottom {
+    margin-top: -10px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
+  }
+
+  .strap-connector {
+    width: 60px;
+    height: 6px;
+    background: #0d0f14;
+    border-radius: 3px;
+    opacity: 0.6;
+    margin: 4px auto;
+  }
+
+  /* Case chassis (Space Titanium squircle) */
+  .case {
+    position: relative;
+    width: 320px;
+    height: 390px;
+    padding: 12px;
+    border-radius: 58px;
+    background: linear-gradient(135deg, #2b303d 0%, #1a1e27 45%, #0f1218 100%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+      inset 0 2px 4px rgba(255, 255, 255, 0.25),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.6),
+      0 0 0 2px #0a0c10,
+      0 20px 40px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+  }
+
+  /* Digital Crown */
+  .crown {
+    position: absolute;
+    right: -12px;
+    top: 76px;
+    width: 14px;
+    height: 56px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(
+      to bottom,
+      #3f4554 0px,
+      #3f4554 2px,
+      #1e212a 2px,
+      #1e212a 4px
+    );
+    box-shadow:
+      inset -1px 0 2px rgba(255, 255, 255, 0.3),
+      inset 1px 0 2px rgba(0, 0, 0, 0.7),
+      2px 2px 6px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .crown-ring {
+    position: absolute;
+    left: 2px;
+    width: 3px;
+    height: 48px;
+    border-radius: 2px;
+    background: #ff453a;
+    opacity: 0.85;
+  }
+
+  /* Side Button */
+  .side-button {
+    position: absolute;
+    right: -7px;
+    top: 160px;
+    width: 8px;
+    height: 62px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #1d212b, #2b303d);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.2),
+      2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Speaker Cutout */
+  .speaker-slit {
+    position: absolute;
+    left: -5px;
+    top: 155px;
+    width: 5px;
+    height: 38px;
+    border-radius: 3px;
+    background: #07090c;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Screen */
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 46px;
+    background: #000000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+
+  /* Curved glass glare */
+  .glass-glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 60%);
+    pointer-events: none;
+    z-index: 10;
+    border-top-left-radius: 46px;
+    border-top-right-radius: 46px;
+  }
+
+  /* Status Bar */
+  .status-bar {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 22px 4px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.2px;
+  }
+
+  .status-indicators {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .workout-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: rgba(48, 209, 88, 0.16);
+    color: #30d158;
+    font-size: 10px;
+  }
+
+  .pulse-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #30d158;
+    animation: hx-pulse 1.8s infinite;
+  }
+
+  @keyframes hx-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  /* Content */
+  .content {
+    position: relative;
+    flex: 1;
+    padding: 2px 14px 14px;
+    overflow: hidden;
+    color: var(--hx-on-surface);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', var(--hx-font-body), sans-serif;
+  }
+</style>

@@ -1,0 +1,168 @@
+---
+// Rambler: describe a meal, Herculex AI drafts the entries, you confirm.
+// Drawn as an HxSheet (surfaceContainer, 28 top radius, grab handle).
+import Icon from '../Icon.astro';
+
+const items = [
+  { name: 'Scrambled eggs', portion: '2 eggs · 120 g', kcal: 182 },
+  { name: 'Rye bread', portion: '1 slice · 40 g', kcal: 99 },
+  { name: 'Flat white', portion: '220 ml', kcal: 110 },
+];
+const total = items.reduce((sum, item) => sum + item.kcal, 0);
+---
+
+<div class="sheet">
+  <span class="handle"></span>
+  <p class="sheet-title">Rambler</p>
+  <p class="sheet-subtitle">Describe what you ate. Review before it's logged.</p>
+
+  <div class="prompt">
+    <Icon name="mic_rounded" size={18} />
+    <span>“Two scrambled eggs, a slice of rye bread and a flat white.”</span>
+  </div>
+
+  <p class="micro-label draft-label"><Icon name="auto_awesome_rounded" size={14} /> Herculex AI draft</p>
+  <ul class="items" role="list">
+    {items.map((item) => (
+      <li>
+        <span class="check"><Icon name="check_rounded" size={16} /></span>
+        <span class="item-text">
+          <span class="item-name">{item.name}</span>
+          <span class="item-portion">{item.portion}</span>
+        </span>
+        <span class="item-kcal">{item.kcal} kcal</span>
+      </li>
+    ))}
+  </ul>
+
+  <div class="buttons">
+    <span class="hx-btn hx-btn--secondary">Edit</span>
+    <span class="hx-btn hx-btn--primary">Log {items.length} items · {total} kcal</span>
+  </div>
+</div>
+
+<style>
+  .sheet {
+    padding: 10px 20px 20px;
+    border-radius: 28px;
+    background: var(--hx-surface-container);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 40%, transparent);
+  }
+
+  .handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 0 auto 18px;
+    border-radius: 2px;
+    background: var(--hx-outline-variant);
+  }
+
+  .sheet-title {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .sheet-subtitle {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .prompt {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: var(--hx-surface-variant);
+    color: var(--hx-on-surface);
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .prompt :global(svg) {
+    flex: none;
+    margin-top: 1px;
+    color: var(--hx-primary-text);
+  }
+
+  .draft-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 18px 0 8px;
+    font-size: 11px;
+  }
+
+  .items {
+    display: grid;
+    gap: 8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .items li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: var(--hx-surface-lowest);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .check {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--hx-primary);
+    color: #fff;
+    flex: none;
+  }
+
+  .item-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hx-on-surface);
+  }
+
+  .item-portion {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .item-kcal {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--hx-on-surface);
+    white-space: nowrap;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .buttons .hx-btn {
+    cursor: default;
+  }
+
+  @media (max-width: 420px) {
+    .buttons .hx-btn--primary {
+      font-size: 14px;
+      padding-inline: 14px;
+    }
+  }
+</style>

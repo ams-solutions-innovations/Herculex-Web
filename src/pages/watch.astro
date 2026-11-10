@@ -1,0 +1,498 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import WatchShowcase from '../components/mockups/WatchShowcase.astro';
+import { site } from '../data/site';
+
+const watchFeatures = [
+  {
+    icon: 'signal_cellular_alt_rounded',
+    title: '100% Offline & Standalone',
+    body: 'Leave your phone in your gym locker. Start, log, and complete full workouts with full exercise history stored locally on your wrist.',
+    badge: 'Standalone',
+  },
+  {
+    icon: 'tune_rounded',
+    title: 'Tactile Rotary Controls',
+    body: 'Spin the Apple Watch Digital Crown or turn the Galaxy Watch bezel to dial in weights and reps with precise haptic clicks — even with chalk on your hands.',
+    badge: 'Precision',
+  },
+  {
+    icon: 'timer_outlined',
+    title: 'Haptic Rest Timer',
+    body: 'Finishing a set triggers your programmed rest interval immediately. A distinct double-pulse vibration taps your wrist when it is go-time.',
+    badge: 'Automation',
+  },
+  {
+    icon: 'favorite_rounded',
+    title: 'Live Heart Rate & Vitals',
+    body: 'Continuous optical sensor monitoring with real-time HR zones, recovery dips, active workout calories, and nervous system readiness feedback.',
+    badge: 'Biometrics',
+  },
+  {
+    icon: 'dashboard_customize_rounded',
+    title: 'Complications & Tiles',
+    body: 'Add your active fasting timer, remaining macro targets, or today’s scheduled routine directly onto your favorite watch face.',
+    badge: 'Glanceable',
+  },
+  {
+    icon: 'lock_outlined',
+    title: 'Zero Health Cloud Leaks',
+    body: 'Biometric telemetry from Apple Health and Health Connect stays strictly on your watch and phone. We never upload your raw health vitals to cloud servers.',
+    badge: 'Privacy',
+  },
+];
+
+const platformSpecs = [
+  {
+    name: 'Apple Watch',
+    sub: 'watchOS 10.0+',
+    icon: 'phone_iphone',
+    badge: 'SwiftUI Native',
+    hardware: 'Apple Watch Series 4 through 10, SE & Ultra',
+    points: [
+      'Digital Crown precise weight & rep scrolling',
+      'Smart Stack widgets for fasting & calories',
+      'Native WorkoutKit & HKWorkoutSession telemetry',
+      'Background execution with screen-off haptic pulses',
+      'NowPlaying music control right from your workout',
+    ],
+  },
+  {
+    name: 'Android Watch',
+    sub: 'Wear OS 4.0+',
+    icon: 'android',
+    badge: 'Jetpack Compose',
+    hardware: 'Samsung Galaxy Watch 4/5/6/7/Ultra, Google Pixel Watch 1/2/3',
+    points: [
+      'Rotary bezel input with signature SetBezel dial',
+      'Custom Wear OS Tiles for single-swipe glance',
+      'Health Connect integration for steps & HR',
+      'OneUI-inspired oversized touch targets for sweaty fingers',
+      'Autonomous SQLite sync with phone database',
+    ],
+  },
+];
+
+const watchFaqs = [
+  {
+    q: 'Do I need my phone with me while working out?',
+    a: 'No. Both the Apple Watch and Wear OS apps are fully standalone. You can leave your phone in your locker or at home. All your sets, weights, reps, and rest timers are recorded in the watch’s local storage and synchronize automatically with your phone once you are back in range.',
+  },
+  {
+    q: 'Does the rest timer vibrate if my watch screen is off or in Always-On mode?',
+    a: 'Yes. The rest timer runs as an active foreground workout session on both platforms, utilizing native system vibration notifications that deliver a crisp haptic tap to your wrist the exact second your rest ends.',
+  },
+  {
+    q: 'How does set input work on a small screen?',
+    a: 'We designed the logger specifically for gym ergonomics: giant high-contrast touch targets, quick +/− adjustment buttons, and full support for hardware rotary dials (the Digital Crown on Apple Watch and the rotating bezel or crown on Wear OS).',
+  },
+  {
+    q: 'Can I log advanced set types like Drop Sets or Myo Reps from the watch?',
+    a: 'Yes. Herculex on your wrist supports warm-up sets, working sets, drop sets, rest-pause sets, and myo-reps with color-coded badge indicators and automated rest adjustments.',
+  },
+];
+---
+
+<BaseLayout
+  title="Smartwatch Companion — Apple Watch & Android Wear OS"
+  description="Experience Herculex on your wrist. Native standalone workout logging, wrist rest timers, and live vitals for Apple Watch and Android Wear OS."
+>
+  <div class="watch-page">
+    <!-- Hero Section -->
+    <section class="watch-hero">
+      <div class="container hero-container">
+        <div class="hero-copy">
+          <p class="micro-label" style="color: var(--hx-primary-text)">
+            <span>Apple Watch</span> · <span>Wear OS</span>
+          </p>
+          <h1>Leave your phone in your locker.</h1>
+          <p class="lead">
+            Herculex on your wrist delivers zero-friction workout logging, tactile rotary controls, and smart haptic
+            rest timers — built natively for watchOS and Wear OS.
+          </p>
+          <div class="cta-row">
+            <a class="hx-btn hx-btn--primary" href={site.appUrl}>
+              Open web app <Icon name="arrow_forward_rounded" />
+            </a>
+            <a class="hx-btn hx-btn--secondary" href="/#get">Get the app</a>
+          </div>
+        </div>
+
+        <!-- Interactive Watch Showcase Component -->
+        <div class="hero-showcase">
+          <WatchShowcase initialPlatform="apple" initialScreen="set_logger" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Watch Capabilities -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head section-head--center">
+          <p class="micro-label">Engineered for the wrist</p>
+          <h2>Everything you need between sets.</h2>
+          <p class="lead">
+            Built from scratch for watchOS and Wear OS — not a stripped-down phone webview.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          {watchFeatures.map((f) => (
+            <article class="hx-card feature-card">
+              <div class="card-top">
+                <span class="icon-bubble accent-training"><Icon name={f.icon} /></span>
+                <span class="feature-badge">{f.badge}</span>
+              </div>
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Platform Breakdown: Apple Watch vs Android Watch -->
+    <section class="section" id="platforms">
+      <div class="container">
+        <div class="section-head section-head--center">
+          <p class="micro-label">Dual ecosystem support</p>
+          <h2>Built natively for both platforms.</h2>
+          <p class="lead">
+            We embrace the unique hardware traits of each ecosystem instead of forcing a generic design.
+          </p>
+        </div>
+
+        <div class="platforms-grid">
+          {platformSpecs.map((p) => (
+            <div class="hx-card platform-card">
+              <div class="platform-header">
+                <span class="icon-bubble"><Icon name={p.icon} /></span>
+                <div>
+                  <h3>{p.name}</h3>
+                  <span class="platform-os">{p.sub}</span>
+                </div>
+                <span class="platform-tech-pill">{p.badge}</span>
+              </div>
+
+              <p class="platform-hardware">
+                <strong>Compatible with:</strong> {p.hardware}
+              </p>
+
+              <ul class="platform-points" role="list">
+                {p.points.map((point) => (
+                  <li>
+                    <Icon name="check_circle_rounded" size={18} class="point-icon" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Watch FAQ -->
+    <section class="section" id="faq">
+      <div class="container faq-grid">
+        <div class="section-head">
+          <p class="micro-label">Watch FAQ</p>
+          <h2>Wrist workout questions.</h2>
+          <p class="lead">
+            Everything you want to know about using Herculex on Apple Watch or Wear OS.
+          </p>
+        </div>
+        <div class="faq-list">
+          {watchFaqs.map((f) => (
+            <details class="faq">
+              <summary>
+                <span>{f.q}</span>
+                <Icon name="expand_more_rounded" class="faq-chevron" />
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" id="get">
+      <div class="container">
+        <div class="hx-card hx-card--accent cta-card">
+          <h2>Take Herculex into your next session.</h2>
+          <p class="lead">Track your training on your phone, your computer, and your wrist.</p>
+          <div class="cta-row">
+            <a class="hx-btn hx-btn--primary" href={site.appUrl}>
+              Open web app <Icon name="arrow_forward_rounded" />
+            </a>
+            <a class="hx-btn hx-btn--secondary" href="/">Back to home</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .watch-page {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Hero ── */
+  .watch-hero {
+    padding-block: clamp(32px, 6vw, 64px) clamp(48px, 8vw, 84px);
+    background: radial-gradient(circle at 50% 10%, rgba(10, 132, 255, 0.08) 0%, transparent 60%);
+  }
+
+  .hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .hero-copy {
+    text-align: center;
+    max-width: 720px;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(32px, 5.5vw, 56px);
+    font-family: var(--hx-font-display);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    margin: 12px 0 16px;
+    color: var(--hx-on-surface);
+  }
+
+  .hero-copy .lead {
+    font-size: clamp(16px, 2.2vw, 19px);
+    line-height: 1.5;
+    color: var(--hx-on-surface-variant);
+    margin-bottom: 24px;
+  }
+
+  .cta-row {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .hero-showcase {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* ── Features Grid ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: var(--hx-surface-container, #161e2e);
+    border: 1px solid var(--hx-outline-variant, #2b374e);
+    border-radius: var(--hx-radius-lg, 20px);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .feature-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--hx-primary-text, #4da3ff);
+    background: rgba(10, 132, 255, 0.12);
+    padding: 3px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .feature-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 8px;
+  }
+
+  .feature-card p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--hx-secondary, #94a3b8);
+    margin: 0;
+  }
+
+  /* ── Platforms Comparison Grid ── */
+  .platforms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .platform-card {
+    padding: 32px;
+    background: var(--hx-surface-container, #161e2e);
+    border: 1px solid var(--hx-outline-variant, #2b374e);
+    border-radius: var(--hx-radius-xl, 28px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .platform-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .platform-header h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .platform-os {
+    font-size: 13px;
+    color: var(--hx-tertiary, #64748b);
+  }
+
+  .platform-tech-pill {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  .platform-hardware {
+    font-size: 13.5px;
+    color: var(--hx-on-surface-variant);
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .platform-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .platform-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14.5px;
+    color: var(--hx-on-surface-variant);
+    line-height: 1.45;
+  }
+
+  .point-icon {
+    color: var(--hx-success, #30d158);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── FAQ ── */
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 900px) {
+    .faq-grid {
+      grid-template-columns: 1fr 1.6fr;
+      align-items: start;
+    }
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .faq {
+    padding: 18px 20px;
+    background: var(--hx-surface-container);
+    border: 1px solid var(--hx-outline-variant);
+    border-radius: var(--hx-radius-md);
+  }
+
+  .faq summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--hx-on-surface);
+    list-style: none;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    transition: transform var(--hx-base) ease;
+    color: var(--hx-secondary);
+  }
+
+  .faq[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq p {
+    margin: 12px 0 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--hx-on-surface-variant);
+  }
+
+  /* ── CTA Card ── */
+  .cta-card {
+    text-align: center;
+    padding: clamp(36px, 6vw, 64px) 24px;
+    border-radius: var(--hx-radius-xl);
+    background: linear-gradient(180deg, var(--hx-surface-container) 0%, var(--hx-surface-lowest) 100%);
+  }
+
+  .cta-card h2 {
+    font-size: clamp(26px, 4vw, 38px);
+    margin: 0 0 10px;
+  }
+
+  .cta-card .lead {
+    margin: 0 auto 24px;
+    max-width: 520px;
+  }
+
+  .section-head--center {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 40px;
+  }
+</style>

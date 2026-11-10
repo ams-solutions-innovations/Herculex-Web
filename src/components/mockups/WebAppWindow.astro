@@ -1,0 +1,478 @@
+---
+// The web app on a desktop: the frosted nav rail that replaces HxNavBar on
+// wide screens, and the Nutrition diary (nutrition_view.dart) at 1:1 scale.
+import Icon from '../Icon.astro';
+import LogoMark from '../LogoMark.astro';
+import Ring from './Ring.astro';
+
+const rings = [
+  { label: 'KCAL', value: '1069', target: '/2400', progress: 1069 / 2400, color: 'var(--hx-kcal)' },
+  { label: 'PROTEIN', value: '82g', target: '/180', progress: 82 / 180, color: 'var(--hx-protein)' },
+  { label: 'CARBS', value: '121g', target: '/260', progress: 121 / 260, color: 'var(--hx-carbs)' },
+  { label: 'FATS', value: '31g', target: '/75', progress: 31 / 75, color: 'var(--hx-fat)' },
+];
+
+const foods = [
+  { name: 'Greek yogurt 2%', detail: 'Fage · 200 g', kcal: 146, tint: '#f59e0b', fill: 16, border: 38 },
+  { name: 'Oat flakes', detail: '60 g', kcal: 222, tint: '#10b981', fill: 14, border: 32 },
+  { name: 'Blueberries', detail: '80 g', kcal: 46, tint: '#10b981', fill: 14, border: 32 },
+];
+
+const tabs = [
+  { icon: 'grid_view_rounded', label: 'Dashboard' },
+  { icon: 'restaurant_rounded', label: 'Nutrition' },
+  { icon: 'fitness_center_rounded', label: 'Workouts' },
+  { icon: 'person_rounded', label: 'Profile' },
+];
+---
+
+<figure class="window" role="img" aria-label="The Herculex web app on a desktop browser: the nutrition diary with macro rings and meals, next to a side navigation rail.">
+  <div class="chrome" aria-hidden="true">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="url"><Icon name="lock_rounded" size={13} />app.herculex.app</span>
+  </div>
+
+  <div class="app" aria-hidden="true">
+    <nav class="rail hx-frosted">
+      <LogoMark size={34} class="rail-logo" />
+      <div class="rail-tabs">
+        {tabs.map((tab, i) => (
+          <span class:list={['slot', { selected: i === 1 }]} title={tab.label}>
+            <Icon name={tab.icon} size={24} />
+          </span>
+        ))}
+      </div>
+      <span class="quick-add"><Icon name="add_rounded" size={26} /></span>
+      <img class="rail-avatar" src="/images/avatars/athena.webp" alt="" width="40" height="40" loading="lazy" />
+    </nav>
+
+    <section class="diary">
+      <header class="diary-head">
+        <span class="circle hx-frosted"><Icon name="donut_small_outlined" size={20} /></span>
+        <span class="day"><Icon name="chevron_left_rounded" size={24} />Today<Icon name="chevron_right_rounded" size={24} /></span>
+        <span class="circle hx-frosted"><Icon name="more_vert" size={20} /></span>
+      </header>
+
+      <div class="rings">
+        {rings.map((r) => (
+          <div class="ring">
+            <div class="ring-graphic">
+              <Ring size={64} stroke={5} value={r.progress} color={r.color} />
+              <span class="ring-text"><strong>{r.value}</strong><small>{r.target}</small></span>
+            </div>
+            <span class="ring-label">{r.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <article class="meal open">
+        <div class="meal-head">
+          <Icon name="free_breakfast_outlined" size={20} class="meal-icon" />
+          <div class="meal-title">
+            <p><strong>Breakfast</strong> <span>3 items</span></p>
+            <p class="meal-kcal">414 of 600 kcal <span class="meal-bar" style="--value: 0.69"></span></p>
+          </div>
+          <span class="macro-chip"><span><b class="p">P</b>24g</span><span><b class="c">C</b>52g</span><span><b class="f">F</b>9g</span></span>
+          <Icon name="expand_more_rounded" size={24} class="chevron" />
+        </div>
+        <div class="meal-body">
+          {foods.map((food) => (
+            <div class="food" style={`--tint: ${food.tint}; --fill: ${food.fill}%; --border: ${food.border}%`}>
+              <div>
+                <p class="food-name">{food.name}</p>
+                <p class="food-detail">{food.detail}</p>
+              </div>
+              <span class="food-kcal">{food.kcal} kcal</span>
+              <Icon name="more_vert" size={18} class="food-more" />
+            </div>
+          ))}
+          <span class="add-food"><Icon name="add_rounded" size={20} />Add food</span>
+        </div>
+      </article>
+
+      <article class="meal">
+        <div class="meal-head">
+          <Icon name="lunch_dining_rounded" size={20} class="meal-icon" />
+          <div class="meal-title">
+            <p><strong>Lunch</strong> <span>2 items</span></p>
+            <p class="meal-kcal">655 of 800 kcal <span class="meal-bar" style="--value: 0.82"></span></p>
+          </div>
+          <span class="macro-chip"><span><b class="p">P</b>58g</span><span><b class="c">C</b>69g</span><span><b class="f">F</b>22g</span></span>
+          <Icon name="expand_more_rounded" size={24} class="chevron" />
+        </div>
+      </article>
+
+      <article class="meal">
+        <div class="meal-head">
+          <Icon name="dinner_dining_rounded" size={20} class="meal-icon" />
+          <div class="meal-title">
+            <p><strong>Dinner</strong> <span>0 items</span></p>
+            <p class="meal-kcal">0 of 700 kcal <span class="meal-bar" style="--value: 0"></span></p>
+          </div>
+          <span class="macro-chip"><span><b class="p">P</b>0g</span><span><b class="c">C</b>0g</span><span><b class="f">F</b>0g</span></span>
+          <Icon name="expand_more_rounded" size={24} class="chevron" />
+        </div>
+      </article>
+    </section>
+  </div>
+</figure>
+
+<style>
+  .window {
+    width: 1080px;
+    height: 720px;
+    overflow: hidden;
+    border-radius: 18px;
+    background: var(--hx-surface-container);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--hx-outline-variant) 70%, transparent),
+      0 40px 90px -30px rgb(0 0 0 / 0.6);
+    font-family: var(--hx-font-body);
+    font-size: 15px;
+    line-height: normal;
+    letter-spacing: -0.1px;
+    color: var(--hx-on-surface-variant);
+    user-select: none;
+    flex: none;
+  }
+
+  .chrome {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 18px;
+    border-bottom: 1px solid color-mix(in srgb, var(--hx-outline-variant) 60%, transparent);
+  }
+
+  .dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dots i {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--hx-on-surface) 18%, transparent);
+  }
+
+  .url {
+    position: absolute;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    border-radius: var(--hx-radius-pill);
+    background: var(--hx-surface-variant);
+    color: var(--hx-on-surface-variant);
+    font-size: 13px;
+    font-weight: 500;
+    transform: translateX(-50%);
+  }
+
+  .app {
+    position: relative;
+    display: flex;
+    height: calc(100% - 44px);
+    background: linear-gradient(to bottom right, var(--hx-gradient-top), var(--hx-gradient-mid), var(--hx-gradient-bottom));
+  }
+
+  /* Nav rail: a vertical HxNavBar. */
+  .rail {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 72px;
+    padding: 18px 0 14px;
+    border-radius: 36px;
+  }
+
+  .rail :global(.rail-logo) {
+    color: var(--hx-primary);
+  }
+
+  .rail-tabs {
+    display: grid;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .slot {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--hx-secondary);
+  }
+
+  .slot.selected {
+    background: var(--hx-primary);
+    color: var(--hx-on-primary);
+  }
+
+  .quick-add {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-top: auto;
+    border-radius: 50%;
+    color: var(--hx-quick-add);
+    background: color-mix(in srgb, var(--hx-quick-add) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--hx-quick-add) 55%, transparent);
+  }
+
+  .rail-avatar {
+    width: 40px;
+    height: 40px;
+    margin-top: 14px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #ffd54f;
+  }
+
+  /* Diary column, centred in the content area (readingMax 760). */
+  .diary {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 0 0 52px;
+  }
+
+  .diary-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+  }
+
+  .circle {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--hx-on-surface);
+  }
+
+  .day {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--hx-on-surface);
+  }
+
+  .day :global(svg) {
+    color: var(--hx-secondary);
+  }
+
+  .rings {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding: 0 6px;
+  }
+
+  .ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ring-graphic {
+    position: relative;
+  }
+
+  .ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.15;
+  }
+
+  .ring-text strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--hx-on-surface);
+  }
+
+  .ring-text small {
+    font-size: 9px;
+    color: var(--hx-secondary);
+  }
+
+  .ring-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: var(--hx-secondary);
+  }
+
+  /* Meal accordion. */
+  .meal {
+    margin-top: 10px;
+    border-radius: 32px;
+    background: var(--hx-surface-lowest);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .meal.open {
+    margin-top: 24px;
+  }
+
+  .meal-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 16px 18px 20px;
+  }
+
+  .meal-head :global(.meal-icon) {
+    color: var(--hx-primary-text);
+  }
+
+  .meal-head :global(.chevron) {
+    color: var(--hx-secondary);
+  }
+
+  .meal.open .meal-head :global(.chevron) {
+    transform: rotate(180deg);
+  }
+
+  .meal-title {
+    flex: 1;
+  }
+
+  .meal-title strong {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.1px;
+    color: var(--hx-on-surface);
+  }
+
+  .meal-title span {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .meal-kcal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .meal-bar {
+    --value: 0;
+    position: relative;
+    width: 110px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--hx-surface-variant);
+    overflow: hidden;
+  }
+
+  .meal-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--value) * 100%);
+    background: var(--hx-primary);
+  }
+
+  .macro-chip {
+    display: inline-flex;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: var(--hx-surface-container);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--hx-on-surface-variant);
+    white-space: nowrap;
+  }
+
+  .macro-chip b {
+    margin-right: 3px;
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .macro-chip .p { color: var(--hx-protein); }
+  .macro-chip .c { color: var(--hx-carbs); }
+  .macro-chip .f { color: var(--hx-fat-text); }
+
+  .meal-body {
+    display: grid;
+    gap: 8px;
+    padding: 0 16px 18px;
+  }
+
+  .food {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--tint) var(--fill), var(--hx-surface-container)),
+      var(--hx-surface-container)
+    );
+    border: 1px solid color-mix(in srgb, var(--tint) var(--border), transparent);
+  }
+
+  .food > div {
+    flex: 1;
+  }
+
+  .food-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hx-on-surface);
+  }
+
+  .food-detail {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+
+  .food-kcal {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--hx-on-surface);
+  }
+
+  .food :global(.food-more) {
+    color: var(--hx-secondary);
+  }
+
+  .add-food {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    margin-top: 4px;
+    border-radius: 24px;
+    border: 1px solid color-mix(in srgb, var(--hx-primary) 40%, transparent);
+    color: var(--hx-primary-text);
+    font-size: 15px;
+    font-weight: 600;
+  }
+</style>

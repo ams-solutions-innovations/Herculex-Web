@@ -1,0 +1,76 @@
+---
+// HxNavBar (lib/design_system/components/hx_nav_bar.dart): a frosted pill,
+// 60 tall, icons only; the selected tab sits in a 44px primary circle. The
+// separate 60px "+" quick-add button floats 12px to its right.
+import Icon from '../Icon.astro';
+
+interface Props {
+  selected: 0 | 1 | 2 | 3;
+}
+
+const { selected } = Astro.props;
+const tabs = ['grid_view_rounded', 'restaurant_rounded', 'fitness_center_rounded', 'person_rounded'];
+---
+
+<div class="navbar">
+  <div class="pill hx-frosted">
+    {tabs.map((icon, i) => (
+      <span class:list={['slot', { selected: i === selected }]}>
+        <Icon name={icon} size={24} />
+      </span>
+    ))}
+  </div>
+  <span class="quick-add">
+    <Icon name="add_rounded" size={28} />
+  </span>
+</div>
+
+<style>
+  .navbar {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 42px; /* safe inset 34 + 8 */
+    z-index: 2;
+    display: flex;
+    gap: 12px;
+  }
+
+  .pill {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    height: 60px;
+    padding: 0 8px;
+    border-radius: var(--hx-radius-pill);
+  }
+
+  .slot {
+    display: grid;
+    place-items: center;
+    justify-self: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--hx-secondary);
+  }
+
+  .slot.selected {
+    background: var(--hx-primary);
+    color: var(--hx-on-primary);
+  }
+
+  .quick-add {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    color: var(--hx-quick-add);
+    background: color-mix(in srgb, var(--hx-quick-add) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--hx-quick-add) 55%, transparent);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+</style>

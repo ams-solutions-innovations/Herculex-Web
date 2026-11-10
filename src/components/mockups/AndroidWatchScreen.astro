@@ -1,0 +1,965 @@
+---
+// Android Watch (Wear OS) screen views based on real Kotlin code:
+// 1. set_logger: Active set logger with SetBezel, 3-column pickers, and RPE dialog
+// 2. rest_timer: Full circular rest timer with GoTimeOverlay
+// 3. active_workout: Active workout overview with OneUiPill exercise cards
+// 4. home: Samsung One UI 9 Watch pills list (HomeScreen.kt)
+// 5. fasting: Full circular fasting bezel timer (FastingScreen.kt)
+import Icon from '../Icon.astro';
+
+interface Props {
+  activeScreen?: string;
+}
+
+const { activeScreen = 'set_logger' } = Astro.props;
+---
+
+<div class="wear-screen-container">
+  <!-- ── 1. SET LOGGER VIEW (SetLoggerScreen.kt) ── -->
+  <div class:list={['wear-view', 'view-set_logger', { active: activeScreen === 'set_logger' }]}>
+    <!-- Top Header: Exercise Name & Variant -->
+    <div class="wear-logger-head">
+      <span class="wear-ex-main">Barbell Bench Press</span>
+      <span class="wear-ex-sub">Barbell</span>
+    </div>
+
+    <!-- 3-Column Picker & Set Badge (SetLoggerScreen.kt:713-907) -->
+    <div class="wear-logger-cols">
+      <!-- Left Column: Weight -->
+      <div class="wear-col wear-col--left">
+        <span class="wear-col-lbl wear-col-lbl--blue">Kg</span>
+        <div class="wear-stepper-val">
+          <button type="button" class="wear-step-btn js-wear-w-minus" aria-label="Decrease weight">−</button>
+          <span class="wear-val js-wear-weight">82.5</span>
+          <button type="button" class="wear-step-btn js-wear-w-plus" aria-label="Increase weight">+</button>
+        </div>
+      </div>
+
+      <!-- Center Column: Set Badge & Indicator -->
+      <div class="wear-col wear-col--center">
+        <div class="wear-set-badge">
+          <Icon name="fitness_center_rounded" size={13} />
+        </div>
+        <span class="wear-set-number">3/4</span>
+        <span class="wear-set-rest-inline js-rest-countdown-mini">01:15</span>
+      </div>
+
+      <!-- Right Column: Reps -->
+      <div class="wear-col wear-col--right">
+        <span class="wear-col-lbl wear-col-lbl--blue">Reps</span>
+        <div class="wear-stepper-val">
+          <button type="button" class="wear-step-btn js-wear-r-minus" aria-label="Decrease reps">−</button>
+          <span class="wear-val js-wear-reps">6</span>
+          <button type="button" class="wear-step-btn js-wear-r-plus" aria-label="Increase reps">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chips & Target Hint -->
+    <div class="wear-logger-chips">
+      <span class="wear-chip wear-chip--cyan">WORKING</span>
+      <span class="wear-chip wear-chip--purple">RPE 8.5</span>
+      <span class="wear-hint-text">Target: 82.5 kg × 6</span>
+    </div>
+
+    <!-- Bottom Nav Bar: ‹ · OK · › (SetLoggerScreen.kt:947-970) -->
+    <div class="wear-logger-bottom">
+      <button type="button" class="wear-circle-nav" aria-label="Previous set">‹</button>
+      <button type="button" class="wear-circle-ok js-wear-ok-btn" aria-label="Confirm set and open RPE">OK</button>
+      <button type="button" class="wear-circle-nav" aria-label="Next set">›</button>
+    </div>
+
+    <!-- ── Interactive RPE Effort Dialog Modal (SetLoggerScreen.kt:1159-1285) ── -->
+    <div class="wear-rpe-modal js-wear-rpe-modal" aria-hidden="true">
+      <div class="wear-rpe-glow"></div>
+      <div class="wear-rpe-content">
+        <span class="wear-rpe-title">RPE (Effort)</span>
+        <span class="wear-rpe-summary js-rpe-summary-text">82.5 kg × 6 reps</span>
+
+        <!-- Giant RPE Dial Picker -->
+        <div class="wear-rpe-dial">
+          <button type="button" class="wear-rpe-step-btn js-rpe-minus">−</button>
+          <span class="wear-rpe-giant-number js-rpe-value">8.5</span>
+          <button type="button" class="wear-rpe-step-btn js-rpe-plus">+</button>
+        </div>
+
+        <span class="wear-rpe-desc js-rpe-desc">1–2 reps in reserve · High effort</span>
+
+        <!-- RPE Dialog Action Buttons: Close (✕) & Confirm (✓) -->
+        <div class="wear-rpe-actions">
+          <button type="button" class="wear-rpe-btn-close js-rpe-close" aria-label="Cancel">✕</button>
+          <button type="button" class="wear-rpe-btn-confirm js-rpe-confirm" aria-label="Confirm set">✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. REST TIMER VIEW (RestTimerStore.kt & GoTimeOverlay.kt) ── -->
+  <div class:list={['wear-view', 'view-rest_timer', { active: activeScreen === 'rest_timer' }]}>
+    <span class="wear-rest-tag">REST TIMER</span>
+
+    <!-- Giant Countdown Display -->
+    <div class="wear-rest-center">
+      <span class="wear-rest-digits js-wear-rest-digits">01:15</span>
+      <span class="wear-rest-hr">♥ 138 bpm recovering</span>
+    </div>
+
+    <!-- Next Plan -->
+    <div class="wear-rest-next">
+      <span class="wear-rest-next-lbl">NEXT SET 4</span>
+      <span class="wear-rest-next-val">82.5 kg × 6 reps</span>
+    </div>
+
+    <!-- Bottom Buttons (+30s and Skip) -->
+    <div class="wear-rest-btn-row">
+      <button type="button" class="wear-btn-sec js-wear-rest-add30">+30s</button>
+      <button type="button" class="wear-btn-skip js-wear-rest-skip">SKIP</button>
+    </div>
+
+    <!-- ── Interactive "IT'S GO TIME" Overlay (GoTimeOverlay.kt) ── -->
+    <div class="wear-gotime-overlay js-gotime-overlay" aria-hidden="true">
+      <div class="wear-gotime-box">
+        <span class="wear-gotime-title">IT'S GO TIME</span>
+        <span class="wear-gotime-sub">Rest is over · Set 4 ready</span>
+        <button type="button" class="wear-gotime-dismiss js-gotime-dismiss">LIFT NOW</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. ACTIVE WORKOUT VIEW (ActiveWorkoutScreen.kt) ── -->
+  <div class:list={['wear-view', 'view-active_workout', { active: activeScreen === 'active_workout' }]}>
+    <div class="wear-workout-header">
+      <span class="wear-workout-name">Full Body A</span>
+      <span class="wear-workout-timer">18:42</span>
+      <div class="wear-workout-vitals">
+        <span class="wear-vital-heart">♥ 142</span>
+        <span class="wear-vital-flame">🔥 328</span>
+      </div>
+    </div>
+
+    <!-- OneUI Pills List (ActiveWorkoutScreen.kt) -->
+    <div class="wear-workout-pills">
+      <!-- Exercise 1 (Current Active OneUI Royal Blue Pill) -->
+      <div class="wear-pill wear-pill--royal">
+        <div class="wear-pill-badge">
+          <img src="/images/exercises/barbell-bench-press.webp" alt="" class="wear-pill-img" width="24" height="24" />
+        </div>
+        <div class="wear-pill-center">
+          <span class="wear-pill-title">Bench Press</span>
+          <span class="wear-pill-stat"><strong>2/3</strong> | Target 82.5 kg</span>
+        </div>
+      </div>
+
+      <!-- Exercise 2 (Upcoming Slate Navy Pill) -->
+      <div class="wear-pill wear-pill--slate">
+        <div class="wear-pill-badge">
+          <img src="/images/exercises/barbell-back-squat.webp" alt="" class="wear-pill-img" width="24" height="24" />
+        </div>
+        <div class="wear-pill-center">
+          <span class="wear-pill-title">Back Squat</span>
+          <span class="wear-pill-stat"><strong>0/3</strong> | Target 100 kg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finish Action -->
+    <button type="button" class="wear-pill wear-pill--emerald wear-pill--btn">
+      <Icon name="check_circle_rounded" size={14} />
+      <span>Finish Workout</span>
+    </button>
+  </div>
+
+  <!-- ── 4. HOME VIEW (HomeScreen.kt + OneUiPill.kt) ── -->
+  <div class:list={['wear-view', 'view-home', { active: activeScreen === 'home' }]}>
+    <div class="wear-home-head">
+      <span class="wear-home-title">Herculex</span>
+    </div>
+
+    <div class="wear-home-scroll">
+      <!-- Sync with Phone Pill (SlateNavy) -->
+      <div class="wear-pill wear-pill--slate js-wear-sync-pill">
+        <div class="wear-pill-badge">
+          <Icon name="sync_rounded" size={15} class="wear-sync-ico" />
+        </div>
+        <div class="wear-pill-center">
+          <span class="wear-pill-title">Sync with Phone</span>
+          <span class="wear-pill-stat js-sync-status-txt">Synced · just now</span>
+        </div>
+      </div>
+
+      <!-- Active Workout Pill (EmeraldGreen) -->
+      <div class="wear-pill wear-pill--emerald">
+        <div class="wear-pill-badge">
+          <Icon name="timer_outlined" size={15} />
+        </div>
+        <div class="wear-pill-center">
+          <span class="wear-pill-title">Active Workout</span>
+          <span class="wear-pill-stat"><strong>18:42</strong> | Full Body A</span>
+        </div>
+      </div>
+
+      <!-- CNS Readiness Pill (EmeraldGreen) -->
+      <div class="wear-pill wear-pill--emerald">
+        <div class="wear-pill-badge">
+          <Icon name="favorite_rounded" size={15} />
+        </div>
+        <div class="wear-pill-center">
+          <span class="wear-pill-title">CNS Readiness</span>
+          <span class="wear-pill-stat"><strong>94%</strong> | Optimal</span>
+        </div>
+      </div>
+
+      <!-- Nutrition Pill (Terracotta) -->
+      <div class="wear-pill wear-pill--terracotta">
+        <div class="wear-pill-badge">
+          <Icon name="restaurant_rounded" size={15} />
+        </div>
+        <div class="wear-pill-center">
+          <span class="wear-pill-title">Nutrition</span>
+          <span class="wear-pill-stat">1069 kcal | 82g P</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. FASTING VIEW (FastingScreen.kt) ── -->
+  <div class:list={['wear-view', 'view-fasting', { active: activeScreen === 'fasting' }]}>
+    <span class="wear-fast-head">FASTING TIMER</span>
+
+    <div class="wear-fast-dial">
+      <span class="wear-fast-readout js-wear-fast-elapsed">14:22</span>
+      <span class="wear-fast-caption">elapsed · 89%</span>
+    </div>
+
+    <div class="wear-fast-action-box">
+      <button type="button" class="wear-btn-fast-toggle js-wear-fast-btn">
+        <Icon name="stop_rounded" size={14} />
+        <span class="js-fast-btn-text">Stop Fast</span>
+      </button>
+    </div>
+
+    <div class="wear-fast-pill-stage">
+      <span class="wear-stage-badge">16h · Optimal Fat Burning (16:8)</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .wear-screen-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', var(--hx-font-body), sans-serif;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wear-view {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 2px 4px 6px;
+    animation: wear-appear 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .wear-view.active {
+    display: flex;
+  }
+
+  @keyframes wear-appear {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── 1. Set Logger (SetLoggerScreen.kt) ── */
+  .wear-logger-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+
+  .wear-ex-main {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #ffffff;
+    max-width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .wear-ex-sub {
+    font-size: 10px;
+    font-weight: 600;
+    color: #b0bec5;
+  }
+
+  .wear-logger-cols {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .wear-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wear-col-lbl--blue {
+    font-size: 11px;
+    font-weight: 700;
+    color: #42a5f5;
+    margin-bottom: 2px;
+  }
+
+  .wear-stepper-val {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: #141a26;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 3px 4px;
+  }
+
+  .wear-step-btn {
+    width: 18px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.1s ease;
+  }
+
+  .wear-step-btn:hover {
+    color: #ffffff;
+  }
+
+  .wear-step-btn:active {
+    color: #42a5f5;
+  }
+
+  .wear-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: var(--hx-font-display, sans-serif);
+    min-width: 38px;
+    text-align: center;
+  }
+
+  .wear-set-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(66, 165, 245, 0.16);
+    border: 1px solid rgba(66, 165, 245, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+  }
+
+  .wear-set-number {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-top: 2px;
+  }
+
+  .wear-set-rest-inline {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #ffa726;
+  }
+
+  .wear-logger-chips {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 2px 0 4px;
+  }
+
+  .wear-chip {
+    font-size: 7.5px;
+    font-weight: 800;
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  .wear-chip--cyan {
+    background: rgba(0, 229, 255, 0.16);
+    color: #00e5ff;
+  }
+
+  .wear-chip--purple {
+    background: rgba(192, 132, 252, 0.16);
+    color: #c084fc;
+  }
+
+  .wear-hint-text {
+    font-size: 8px;
+    color: #8b93a5;
+  }
+
+  .wear-logger-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+
+  .wear-circle-nav {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #2c2c2e;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wear-circle-ok {
+    width: 44px;
+    height: 36px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #1e44aa, #1565c0);
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(30, 68, 170, 0.45);
+    transition: transform 0.1s ease, filter 0.1s ease;
+  }
+
+  .wear-circle-ok:active {
+    transform: scale(0.94);
+    filter: brightness(1.2);
+  }
+
+  /* ── Interactive RPE Effort Modal ── */
+  .wear-rpe-modal {
+    position: absolute;
+    inset: 0;
+    background: #000000;
+    border-radius: 50%;
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  .wear-rpe-modal.open {
+    display: flex;
+    animation: rpe-zoom-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes rpe-zoom-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .wear-rpe-glow {
+    position: absolute;
+    bottom: -20px;
+    left: 10%;
+    right: 10%;
+    height: 120px;
+    background: radial-gradient(circle, rgba(255, 59, 48, 0.5) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .wear-rpe-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .wear-rpe-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .wear-rpe-summary {
+    font-size: 9.5px;
+    color: #8b93a5;
+    margin-bottom: 2px;
+  }
+
+  .wear-rpe-dial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 4px 0;
+  }
+
+  .wear-rpe-step-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #2c2c2e;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .wear-rpe-giant-number {
+    font-size: 34px;
+    font-weight: 900;
+    color: #ffffff;
+    font-family: var(--hx-font-mono, monospace);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .wear-rpe-desc {
+    font-size: 8.5px;
+    font-weight: 600;
+    color: #ff8a80;
+    margin-bottom: 8px;
+  }
+
+  .wear-rpe-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .wear-rpe-btn-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #2c2c2e;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .wear-rpe-btn-confirm {
+    width: 44px;
+    height: 38px;
+    border-radius: 19px;
+    background: #4caf50;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(76, 175, 80, 0.4);
+  }
+
+  /* ── 2. Rest Timer (RestTimerStore.kt & GoTimeOverlay.kt) ── */
+  .wear-rest-tag {
+    font-size: 9px;
+    font-weight: 800;
+    color: #30d158;
+    background: rgba(48, 209, 88, 0.16);
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  .wear-rest-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    margin: 4px 0;
+  }
+
+  .wear-rest-digits {
+    font-size: 40px;
+    font-weight: 900;
+    color: #ffffff;
+    font-family: var(--hx-font-mono, monospace);
+    letter-spacing: -1.5px;
+    text-shadow: 0 0 18px rgba(48, 209, 88, 0.35);
+  }
+
+  .wear-rest-hr {
+    font-size: 9.5px;
+    color: #ff6b6b;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .wear-rest-next {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.15;
+  }
+
+  .wear-rest-next-lbl {
+    font-size: 7.5px;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.5px;
+  }
+
+  .wear-rest-next-val {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .wear-rest-btn-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+
+  .wear-btn-sec {
+    width: 62px;
+    height: 28px;
+    border-radius: 14px;
+    background: #202636;
+    border: 1px solid #323b52;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .wear-btn-skip {
+    width: 72px;
+    height: 28px;
+    border-radius: 14px;
+    background: #1b4d3e;
+    border: none;
+    color: #a5d6a7;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── GoTime Overlay (GoTimeOverlay.kt) ── */
+  .wear-gotime-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    border-radius: 50%;
+    z-index: 60;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wear-gotime-overlay.active {
+    display: flex;
+    animation: gotime-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes gotime-pop {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .wear-gotime-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .wear-gotime-title {
+    font-size: 21px;
+    font-weight: 900;
+    color: #30d158;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+    text-shadow: 0 0 14px rgba(48, 209, 88, 0.6);
+  }
+
+  .wear-gotime-sub {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 4px 0 10px;
+  }
+
+  .wear-gotime-dismiss {
+    padding: 6px 14px;
+    border-radius: 14px;
+    background: #30d158;
+    color: #032014;
+    font-size: 10px;
+    font-weight: 900;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* ── 3. Active Workout (ActiveWorkoutScreen.kt) ── */
+  .wear-workout-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.15;
+    margin-top: 2px;
+  }
+
+  .wear-workout-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .wear-workout-timer {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: var(--hx-font-mono, monospace);
+  }
+
+  .wear-workout-vitals {
+    display: flex;
+    gap: 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
+
+  .wear-vital-heart { color: #ff453a; }
+  .wear-vital-flame { color: #ffa726; }
+
+  .wear-workout-pills {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  /* OneUiPill Styles */
+  .wear-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    border-radius: 20px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+
+  .wear-pill--royal {
+    background: #1e44aa;
+    color: #ffffff;
+  }
+
+  .wear-pill--royal .wear-pill-badge {
+    background: #132e78;
+  }
+
+  .wear-pill--slate {
+    background: #202636;
+    border: 1px solid #323b52;
+    color: #ffffff;
+  }
+
+  .wear-pill--slate .wear-pill-badge {
+    background: #141926;
+  }
+
+  .wear-pill--emerald {
+    background: #1b4d3e;
+    color: #ffffff;
+  }
+
+  .wear-pill--emerald .wear-pill-badge {
+    background: #113329;
+  }
+
+  .wear-pill--terracotta {
+    background: #5a3225;
+    color: #ffffff;
+  }
+
+  .wear-pill--terracotta .wear-pill-badge {
+    background: #3d2017;
+  }
+
+  .wear-pill-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .wear-pill-img {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .wear-pill-center {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .wear-pill-title {
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .wear-pill-stat {
+    font-size: 9px;
+    color: #c0ccec;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .wear-pill--btn {
+    justify-content: center;
+    width: 130px;
+    height: 28px;
+    border: none;
+    font-size: 10px;
+    font-weight: 800;
+    margin-bottom: 2px;
+  }
+
+  /* ── 4. Home (HomeScreen.kt) ── */
+  .wear-home-head {
+    margin-top: 2px;
+  }
+
+  .wear-home-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .wear-home-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    padding: 0 10px;
+    overflow-y: hidden;
+  }
+
+  .wear-sync-spin {
+    animation: hx-spin 2s linear infinite;
+  }
+
+  @keyframes hx-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── 5. Fasting (FastingScreen.kt) ── */
+  .wear-fast-head {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: #8b93a5;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  .wear-fast-dial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    margin: 6px 0;
+  }
+
+  .wear-fast-readout {
+    font-size: 38px;
+    font-weight: 900;
+    color: #d1c4e9;
+    font-family: var(--hx-font-mono, monospace);
+    letter-spacing: -1px;
+  }
+
+  .wear-fast-caption {
+    font-size: 10px;
+    color: #d3d3d3;
+    margin-top: 2px;
+  }
+
+  .wear-fast-action-box {
+    margin-bottom: 4px;
+  }
+
+  .wear-btn-fast-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    background: #7a2434;
+    border: none;
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .wear-fast-pill-stage {
+    padding: 0 14px;
+    margin-bottom: 2px;
+  }
+
+  .wear-stage-badge {
+    font-size: 8px;
+    font-weight: 700;
+    color: #d1c4e9;
+    background: #32255c;
+    padding: 3px 8px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+</style>

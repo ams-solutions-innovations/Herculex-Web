@@ -1,0 +1,304 @@
+---
+// The Dashboard tab as the app draws it: greeting header, the active fasting
+// card (FastingTimerWidget) and the macro grid (LiveMacrosGrid / HxStatTile).
+import Icon from '../Icon.astro';
+import Ring from './Ring.astro';
+import NavBar from './NavBar.astro';
+
+const macros = [
+  { label: 'CALORIES', icon: 'local_fire_department', value: '1640', target: '/ 2400 kcal', progress: 0.683, color: 'var(--hx-kcal)', iconColor: 'var(--hx-kcal)' },
+  { label: 'PROTEIN', icon: 'egg_alt', value: '128g', target: '/ 180g', progress: 0.711, color: 'var(--hx-protein)', iconColor: 'var(--hx-protein)' },
+  { label: 'CARBS', icon: 'bakery_dining', value: '162g', target: '/ 260g', progress: 0.623, color: 'var(--hx-carbs)', iconColor: 'var(--hx-carbs)' },
+  { label: 'FATS', icon: 'water_drop', value: '52g', target: '/ 75g', progress: 0.693, color: 'var(--hx-fat)', iconColor: 'var(--hx-fat-text)' },
+];
+---
+
+<div class="dashboard">
+  <header class="head">
+    <div>
+      <p class="greeting">GOOD MORNING</p>
+      <p class="name">Hercules</p>
+    </div>
+    <div class="head-actions">
+      <span class="circle hx-frosted"><Icon name="tune_rounded" size={20} /></span>
+      <span class="avatar"><img src="/images/avatars/hercules.webp" alt="" width="36" height="36" loading="eager" /></span>
+    </div>
+  </header>
+
+  <section class="fasting">
+    <div class="fasting-title">
+      <Icon name="timelapse" size={20} />
+      <span>INTERMITTENT FASTING</span>
+    </div>
+    <div class="fasting-ring">
+      <Ring size={160} stroke={8} value={0.855} color="var(--hx-fasting)" />
+      <div class="fasting-time">
+        <span class="countdown">02:19:00</span>
+        <span class="caption">REMAINING</span>
+      </div>
+    </div>
+    <span class="stage"><Icon name="whatshot" size={14} />13h: Accelerated Fat Breakdown</span>
+    <div class="fasting-times">
+      <div><span class="tiny">STARTED</span><span class="clock">20:00</span></div>
+      <div class="end"><span class="tiny">TARGET END</span><span class="clock">12:00</span></div>
+    </div>
+    <span class="end-fast"><Icon name="stop_circle_outlined" size={18} />END FAST</span>
+  </section>
+
+  <section class="macros">
+    {macros.map((m) => (
+      <div class="tile" style={`--accent: ${m.color}; --icon: ${m.iconColor}`}>
+        <div class="tile-top">
+          <span class="tile-label">{m.label}</span>
+          <span class="tile-icon"><Icon name={m.icon} size={18} /></span>
+        </div>
+        <div>
+          <p class="tile-value"><strong>{m.value}</strong> <span>{m.target}</span></p>
+          <div class="hx-bar" style={`--value: ${m.progress}; --accent: ${m.color}`}></div>
+        </div>
+      </div>
+    ))}
+  </section>
+</div>
+
+<NavBar selected={0} />
+
+<style>
+  .dashboard {
+    display: grid;
+    gap: 24px;
+    padding: 14px 24px 0;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .greeting {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    color: var(--hx-secondary);
+  }
+
+  .name {
+    font-family: var(--hx-font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--hx-on-surface);
+  }
+
+  .head-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .circle {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--hx-on-surface);
+  }
+
+  /* Greek avatar badge: conic ring through gold, soft accent glow. */
+  .avatar {
+    display: block;
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--hx-primary),
+      color-mix(in srgb, var(--hx-primary) 35%, transparent),
+      #ffd54f,
+      color-mix(in srgb, var(--hx-primary) 35%, transparent),
+      var(--hx-primary)
+    );
+    box-shadow: 0 0 11px 1px color-mix(in srgb, var(--hx-primary) 32%, transparent);
+  }
+
+  .avatar img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+
+  /* FastingTimerWidget, active state. */
+  .fasting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    border-radius: 28px;
+    background: linear-gradient(
+      to bottom right,
+      color-mix(in srgb, var(--hx-fasting) var(--hx-accent-card-alpha), transparent),
+      var(--hx-surface-lowest)
+    );
+    border: 1px solid color-mix(in srgb, var(--hx-fasting) 30%, transparent);
+    color: var(--hx-fasting);
+  }
+
+  .fasting-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+  }
+
+  .fasting-ring {
+    position: relative;
+    margin-top: 24px;
+  }
+
+  .fasting-time {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .countdown {
+    font-family: var(--hx-font-display);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .caption {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: var(--hx-secondary);
+  }
+
+  .stage {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--hx-fasting) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--hx-fasting) 35%, transparent);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .fasting-times {
+    display: flex;
+    justify-content: space-between;
+    align-self: stretch;
+    margin-top: 20px;
+  }
+
+  .fasting-times div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fasting-times .end {
+    align-items: flex-end;
+  }
+
+  .tiny {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--hx-secondary);
+  }
+
+  .clock {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .end-fast {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 12px 24px;
+    border-radius: 20px;
+    background: var(--hx-fasting);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+  }
+
+  /* LiveMacrosGrid: 2 columns, 16 gap, aspect 1.5 HxStatTiles. */
+  .macros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    aspect-ratio: 1.5;
+    padding: 14px;
+    border-radius: 16px;
+    background: linear-gradient(
+      to bottom right,
+      color-mix(in srgb, var(--accent) var(--hx-accent-card-alpha), transparent),
+      var(--hx-surface-lowest)
+    );
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  .tile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tile-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: var(--hx-secondary);
+  }
+
+  .tile-icon {
+    display: grid;
+    place-items: center;
+    padding: 6px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--icon) 15%, transparent);
+    color: var(--icon);
+  }
+
+  .tile-value {
+    margin-bottom: 8px;
+    white-space: nowrap;
+  }
+
+  .tile-value strong {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .tile-value span {
+    font-size: 13px;
+    color: var(--hx-secondary);
+  }
+</style>

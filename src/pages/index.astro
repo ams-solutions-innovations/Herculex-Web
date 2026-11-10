@@ -1,0 +1,1067 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import PhoneFrame from '../components/mockups/PhoneFrame.astro';
+import DashboardScreen from '../components/mockups/DashboardScreen.astro';
+import WorkoutScreen from '../components/mockups/WorkoutScreen.astro';
+import WebAppWindow from '../components/mockups/WebAppWindow.astro';
+import RemainingCaloriesCard from '../components/mockups/RemainingCaloriesCard.astro';
+import MaintenanceCard from '../components/mockups/MaintenanceCard.astro';
+import RecoveryCard from '../components/mockups/RecoveryCard.astro';
+import AiDraftSheet from '../components/mockups/AiDraftSheet.astro';
+import WatchShowcase from '../components/mockups/WatchShowcase.astro';
+import { site } from '../data/site';
+import { featuredSetTypeIds, setTypeById, setTypes } from '../data/set-types';
+
+const domains = [
+  {
+    accent: 'training',
+    icon: 'fitness_center_rounded',
+    label: 'Training',
+    title: 'Log every set in seconds',
+    body: '483 exercises, 19 set types, supersets, an automatic rest timer and PR detection on every set.',
+  },
+  {
+    accent: 'nutrition',
+    icon: 'restaurant_rounded',
+    label: 'Nutrition',
+    title: 'Know exactly what you eat',
+    body: 'Search 44,000+ EU foods, scan barcodes, build recipes and track 20 micronutrients alongside your macros.',
+  },
+  {
+    accent: 'fasting',
+    icon: 'timelapse',
+    label: 'Fasting',
+    title: 'Fast with a plan',
+    body: 'From 12:12 to 72-hour fasts, with an hour-by-hour stage timeline, weekly schedules and streaks.',
+  },
+  {
+    accent: 'recovery',
+    icon: 'self_improvement_rounded',
+    label: 'Recovery',
+    title: 'Train when you are ready',
+    body: 'Recovery across 19 muscle groups, CNS load, joint-stress flags and deload advice when you need it.',
+  },
+];
+
+const trainingPoints = [
+  { icon: 'history_rounded', title: 'Last time, every time', body: 'Your previous weight, reps and RPE sit next to each set, with targets from your program.' },
+  { icon: 'timer_outlined', title: 'Rest timer that starts itself', body: 'Tick a set and the right rest starts — supersets only rest after the last exercise.' },
+  { icon: 'calculate_outlined', title: 'Plates, machines, bands', body: 'Plate calculator, saved machine settings, chains and bands counted into your real load.' },
+  { icon: 'emoji_events_outlined', title: 'PRs and strength levels', body: 'Estimated 1RM PRs on every set and a level from Novice I to Elite V.' },
+];
+
+const programs = ['5/3/1 for Beginners', 'Full Body Beginner', 'Upper/Lower 4-Day', 'Push Pull Legs', 'GZCLP', 'Natural Superman'];
+
+const programPoints = [
+  { icon: 'auto_awesome_rounded', title: 'Build it for me', body: 'Pick your days, equipment and goal. The planner chooses every exercise, set and rep range.' },
+  { icon: 'stacked_line_chart_rounded', title: 'Real periodisation', body: 'Linear, block, concurrent or conjugate — with waves, deloads and a week-by-week editor.' },
+  { icon: 'event_repeat_rounded', title: 'Adapts every week', body: 'Skipped a session or recovering slowly? Next week adjusts, and you approve the change.' },
+];
+
+const nutritionPoints = [
+  'Adaptive maintenance calories from your real intake and weight trend',
+  'Cut, lean bulk, bulk, recomp or maintain — with safe pacing',
+  'Different targets for training days, rest days or any weekday',
+  'Carb cycling that follows your training load',
+];
+
+const aiPoints = [
+  { icon: 'photo_camera_outlined', title: 'Snap, speak or scan', body: 'Photograph a meal, describe it out loud, or scan a nutrition label — AI drafts the entry.' },
+  { icon: 'rule_rounded', title: 'Deterministic first', body: 'Your program is planned by Herculex’s own engine. AI writes a brief; the planner still picks every exercise.' },
+  { icon: 'verified_user_outlined', title: 'You confirm everything', body: 'AI never writes to your data. Every suggestion is a draft until you review and accept it.' },
+];
+
+const privacyPoints = [
+  { icon: 'health_and_safety_outlined', title: 'Health data stays on your phone', body: 'Steps, sleep and heart rate from Apple Health or Health Connect are never uploaded.' },
+  { icon: 'photo_library_outlined', title: 'Photos stay on your phone', body: 'Progress photos never leave your device. Location data is stripped and face blur is optional.' },
+  { icon: 'lock_outlined', title: 'Locked to your account', body: 'Synced data is protected by row-level security — only your signed-in account can read it.' },
+  { icon: 'download_rounded', title: 'Export or delete anytime', body: 'Download everything as JSON, or delete your account and all cloud data in one step.' },
+];
+
+const faqs = [
+  {
+    q: 'Do I need an account?',
+    a: 'Not on your phone — Herculex works fully offline without signing in. An account lets you sync between devices and use the web app.',
+  },
+  {
+    q: 'Can I use Herculex in a browser?',
+    a: `Yes. Sign in at ${site.appHost} with the same account and pick up where you left off: food log, workouts, programs and insights stay in sync with your phone.`,
+  },
+  {
+    q: 'What stays on my phone only?',
+    a: 'Data from Apple Health and Health Connect (steps, sleep, heart rate), progress photos, the watch companion and home-screen widgets.',
+  },
+  {
+    q: 'Does it work offline?',
+    a: 'Yes. The phone app keeps everything in a local database and syncs with your account when you are back online.',
+  },
+  {
+    q: 'Is Herculex medical advice?',
+    a: 'No. Targets, recovery scores and recommendations are for fitness guidance only. Talk to a doctor before starting a new diet, fasting or training plan.',
+  },
+  {
+    q: 'How do I delete my data?',
+    a: 'In the app go to Profile → Settings → Account → Delete Account. Your account and all cloud data are removed permanently.',
+    link: { href: '/delete-account', label: 'More about account deletion' },
+  },
+];
+
+const techniques = featuredSetTypeIds.map((id) => setTypeById[id]);
+
+const avatars = ['hercules', 'athena', 'zeus', 'artemis', 'ares', 'poseidon', 'hades', 'apollo'];
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="micro-label eyebrow">
+          <span style="color: var(--hx-training)">Training</span>{' · '}
+          <span style="color: var(--hx-nutrition)">Nutrition</span>{' · '}
+          <span style="color: var(--hx-fasting)">Fasting</span>{' · '}
+          <span style="color: var(--hx-recovery)">Recovery</span>
+        </p>
+        <h1>Train, eat and recover with one plan.</h1>
+        <p class="lead">
+          Herculex brings workout logging, nutrition tracking, fasting and recovery into one app — and connects
+          them. Programs adapt to how you recover, calorie targets learn from your real intake and weight, and
+          everything syncs between your phone and the web.
+        </p>
+        <div class="cta-row">
+          <a class="hx-btn hx-btn--primary" href={site.appUrl}>
+            Open web app <Icon name="arrow_forward_rounded" />
+          </a>
+          <a class="hx-btn hx-btn--secondary" href="#get">Get the app</a>
+        </div>
+        <ul class="hero-facts" role="list">
+          <li><strong>44,000+</strong><span>foods</span></li>
+          <li><strong>483</strong><span>exercises</span></li>
+          <li><strong>19</strong><span>muscle groups tracked</span></li>
+        </ul>
+      </div>
+      <div class="hero-visual">
+        <PhoneFrame class="device" label="The Herculex dashboard on a phone: an active 16:8 fast with 2 hours 19 minutes remaining, and today's calories, protein, carbs and fats against their targets.">
+          <DashboardScreen />
+        </PhoneFrame>
+      </div>
+    </div>
+  </section>
+
+  <!-- Four domains -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="micro-label">One app, four domains</p>
+        <h2>Everything that moves your progress, in one place.</h2>
+        <p class="lead">
+          Most people juggle a workout log, a calorie counter and a fasting timer. Herculex puts them on one
+          dashboard so each part can learn from the others.
+        </p>
+      </div>
+      <div class="domain-grid">
+        {domains.map((d) => (
+          <article class={`hx-card hx-card--accent accent-${d.accent} domain`}>
+            <span class="icon-bubble"><Icon name={d.icon} /></span>
+            <p class="micro-label domain-label">{d.label}</p>
+            <h3>{d.title}</h3>
+            <p>{d.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Training -->
+  <section class="section split" id="training">
+    <div class="container split-grid">
+      <div class="split-visual">
+        <PhoneFrame class="device" label="An active workout: Barbell Bench Press with two completed sets of 80 kg for 8 reps and a third set planned at 82.5 kg, followed by Barbell Back Squat.">
+          <WorkoutScreen />
+        </PhoneFrame>
+      </div>
+      <div class="split-copy">
+        <p class="micro-label" style="color: var(--hx-training)">Training</p>
+        <h2>Built for the gym floor.</h2>
+        <p class="lead">
+          Big targets, one-tap sets and the numbers you need between sets — nothing you have to dig for
+          mid-workout.
+        </p>
+        <ul class="points" role="list">
+          {trainingPoints.map((p) => (
+            <li>
+              <span class="icon-bubble accent-training" style="--accent: var(--hx-training)"><Icon name={p.icon} /></span>
+              <div>
+                <p class="title-medium">{p.title}</p>
+                <p>{p.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div class="avatars">
+          <div class="avatar-row" aria-hidden="true">
+            {avatars.map((name) => (
+              <img src={`/images/avatars/${name}.webp`} alt="" width="48" height="48" loading="lazy" />
+            ))}
+          </div>
+          <p class="body-small">Pick your hero from 13 Greek-myth avatars.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programs -->
+  <section class="section" id="programs">
+    <div class="container">
+      <div class="section-head">
+        <p class="micro-label" style="color: var(--hx-training)">Programs</p>
+        <h2>Programs that adjust to you.</h2>
+        <p class="lead">
+          Start a proven program or let Herculex build one around your schedule, equipment and goal. Either way,
+          it keeps adapting as you train.
+        </p>
+      </div>
+      <div class="program-grid">
+        {programPoints.map((p) => (
+          <article class="hx-card program-card">
+            <span class="icon-bubble"><Icon name={p.icon} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </article>
+        ))}
+      </div>
+      <div class="program-pills">
+        <p class="micro-label">Ready-made programs</p>
+        <ul role="list">
+          {programs.map((name) => <li class="hx-pill">{name}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training techniques -->
+  <section class="section" id="techniques">
+    <div class="container">
+      <div class="section-head">
+        <p class="micro-label" style="color: var(--hx-training)">Training techniques</p>
+        <h2>Drop sets, myo reps and more — explained.</h2>
+        <p class="lead">
+          Herculex logs {setTypes.length} kinds of set. Not sure what a drop set or a myo-rep set actually is? Every
+          technique comes with how to do it, when to use it and how the app counts it.
+        </p>
+      </div>
+      <div class="technique-grid">
+        {techniques.map((t) => (
+          <a class="hx-card hx-card--accent technique" style={`--accent: ${t.accent}`} href={`/training-techniques#${t.id}`}>
+            <span class="technique-badge" aria-hidden="true">{t.badge}</span>
+            <h3>{t.label}</h3>
+            <p>{t.short}</p>
+            <span class="technique-cta">How it works <Icon name="arrow_forward_rounded" size={18} /></span>
+          </a>
+        ))}
+      </div>
+      <p class="technique-link">
+        <a href="/training-techniques">See all {setTypes.length} training techniques <Icon name="arrow_forward_rounded" size={18} /></a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Nutrition -->
+  <section class="section split" id="nutrition">
+    <div class="container split-grid split-grid--reverse">
+      <div class="split-copy">
+        <p class="micro-label" style="color: var(--hx-nutrition)">Nutrition</p>
+        <h2>Targets that learn your metabolism.</h2>
+        <p class="lead">
+          Herculex compares what you eat with how your weight trend moves, and recalibrates your maintenance
+          calories every week. No guesswork, no crash diets — and a number you set yourself is never overwritten.
+        </p>
+        <ul class="checks" role="list">
+          {nutritionPoints.map((point) => (
+            <li><Icon name="check_circle_rounded" size={22} />{point}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="split-visual stack">
+        <MaintenanceCard />
+        <RemainingCaloriesCard />
+      </div>
+    </div>
+  </section>
+
+  <!-- Recovery & insights -->
+  <section class="section split" id="insights">
+    <div class="container split-grid">
+      <div class="split-visual stack">
+        <RecoveryCard />
+        <div class="hx-card coach">
+          <div class="coach-head">
+            <Icon name="insights_rounded" size={17} />
+            <span>Hercul Insights</span>
+          </div>
+          <p>
+            Hercul sees 64% of your volume going to pushing. Pulling builds the shoulders that let you keep
+            pushing — even it up over the next few weeks.
+          </p>
+          <span class="coach-cta">Review muscle volume <Icon name="chevron_right_rounded" size={18} /></span>
+        </div>
+      </div>
+      <div class="split-copy">
+        <p class="micro-label" style="color: var(--hx-recovery)">Recovery &amp; insights</p>
+        <h2>Know when to push and when to back off.</h2>
+        <p class="lead">
+          Every set feeds a recovery model for 19 muscle groups and your nervous system. Hercul, the built-in
+          coach, turns the patterns into plain advice.
+        </p>
+        <ul class="checks" role="list">
+          <li><Icon name="check_circle_rounded" size={22} />Muscle recovery heatmap and CNS fatigue trends</li>
+          <li><Icon name="check_circle_rounded" size={22} />Push/pull balance, weekly volume and personal records</li>
+          <li><Icon name="check_circle_rounded" size={22} />Dream Physique goals with a phase-by-phase roadmap</li>
+          <li><Icon name="check_circle_rounded" size={22} />An optional weekly report every Sunday</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Herculex AI -->
+  <section class="section" id="ai">
+    <div class="container ai-grid">
+      <div class="ai-copy">
+        <p class="micro-label" style="color: var(--hx-primary-text)">Herculex AI</p>
+        <h2>AI that drafts. You decide.</h2>
+        <p class="lead">
+          AI takes the typing out of logging and explains your data in plain words — but it never takes the
+          wheel.
+        </p>
+        <ul class="points" role="list">
+          {aiPoints.map((p) => (
+            <li>
+              <span class="icon-bubble"><Icon name={p.icon} /></span>
+              <div>
+                <p class="title-medium">{p.title}</p>
+                <p>{p.body}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="ai-visual">
+        <AiDraftSheet />
+      </div>
+    </div>
+  </section>
+
+  <!-- Phone + web -->
+  <section class="section" id="web">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="micro-label">Phone and web</p>
+        <h2>Your phone in the gym. Your desktop for planning.</h2>
+        <p class="lead">
+          Log sets on your phone — even offline. Then open {site.appHost} to plan meals,
+          build programs and dig into insights on a big screen. Same account, same design, always in sync.
+        </p>
+        <a class="hx-btn hx-btn--primary" href={site.appUrl}>Open web app <Icon name="arrow_forward_rounded" /></a>
+      </div>
+      <div class="window-wrap">
+        <WebAppWindow />
+      </div>
+      <ul class="platforms" role="list">
+        <li class="hx-pill"><Icon name="android" />Android</li>
+        <li class="hx-pill"><Icon name="phone_iphone" />iOS</li>
+        <li class="hx-pill"><a href="/watch" class="platform-link"><Icon name="watch_outlined" />Wear OS &amp; Apple Watch</a></li>
+        <li class="hx-pill"><Icon name="computer_rounded" />Web</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Smartwatch Companion -->
+  <section class="section" id="watch">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="micro-label" style="color: var(--hx-primary-text)">Smartwatch companion</p>
+        <h2>Leave your phone in your locker.</h2>
+        <p class="lead">
+          Log sets in seconds, let smart haptic timers tap your wrist, and track live heart rate without carrying your phone.
+          Switch between Apple Watch and Android Watch to explore the native experience.
+        </p>
+      </div>
+
+      <WatchShowcase initialPlatform="apple" initialScreen="set_logger" />
+
+      <div class="watch-cta-banner">
+        <div>
+          <p class="watch-cta-title">Want to dive deeper into watch features &amp; complications?</p>
+          <p class="watch-cta-sub">Discover full watchOS 10 and Wear OS 4 standalone capabilities.</p>
+        </div>
+        <a class="hx-btn hx-btn--secondary" href="/watch">
+          Explore watch details <Icon name="arrow_forward_rounded" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section class="section" id="privacy">
+    <div class="container">
+      <div class="section-head">
+        <p class="micro-label">Privacy</p>
+        <h2>Private by design.</h2>
+        <p class="lead">
+          Herculex is built for the GDPR, including the stricter rules for health data. The most sensitive data
+          never reaches our servers at all.
+        </p>
+      </div>
+      <div class="privacy-grid">
+        {privacyPoints.map((p) => (
+          <article class="hx-card privacy-card">
+            <span class="icon-bubble" style="--accent: var(--hx-success)"><Icon name={p.icon} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </article>
+        ))}
+      </div>
+      <p class="privacy-link"><a href="/privacy">Read the full privacy policy <Icon name="arrow_forward_rounded" size={18} /></a></p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container faq-grid">
+      <div class="section-head">
+        <p class="micro-label">FAQ</p>
+        <h2>Questions, answered.</h2>
+        <p class="lead">
+          Something else? Write to <a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>.
+        </p>
+      </div>
+      <div class="faq-list">
+        {faqs.map((f) => (
+          <details class="faq">
+            <summary>
+              <span>{f.q}</span>
+              <Icon name="expand_more_rounded" class="faq-chevron" />
+            </summary>
+            <p>
+              {f.a}
+              {f.link && <> <a href={f.link.href}>{f.link.label}</a>.</>}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Get the app -->
+  <section class="section" id="get">
+    <div class="container">
+      <div class="hx-card hx-card--accent cta-card">
+        <h2>Start on the web today.</h2>
+        <p class="lead">The phone apps are on their way to the App Store and Google Play.</p>
+        <div class="cta-row">
+          <a class="hx-btn hx-btn--primary" href={site.appUrl}>Open web app <Icon name="arrow_forward_rounded" /></a>
+        </div>
+        <ul class="stores" role="list">
+          <li class="hx-pill"><Icon name="phone_iphone" />App Store · coming soon</li>
+          <li class="hx-pill"><Icon name="android" />Google Play · coming soon</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ── Hero ── */
+  .hero {
+    padding-block: clamp(32px, 6vw, 72px) clamp(48px, 8vw, 96px);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+
+  .eyebrow {
+    letter-spacing: 1.4px;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-facts li {
+    display: grid;
+  }
+
+  .hero-facts strong {
+    font-family: var(--hx-font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    font-variant-numeric: tabular-nums;
+    color: var(--hx-on-surface);
+  }
+
+  .hero-facts span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--hx-secondary);
+  }
+
+  .hero-visual,
+  .split-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Phones are drawn at 1:1 app scale; zoom keeps layout boxes honest. */
+  :global(.device) {
+    zoom: 0.72;
+  }
+
+  @media (min-width: 420px) {
+    :global(.device) {
+      zoom: 0.8;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1.15fr 1fr;
+    }
+
+    :global(.device) {
+      zoom: 0.84;
+    }
+  }
+
+  /* ── Domains ── */
+  .domain-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .domain {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    padding: 24px;
+  }
+
+  .domain .icon-bubble {
+    margin-bottom: 8px;
+  }
+
+  .domain-label {
+    color: var(--accent);
+  }
+
+  @media (min-width: 640px) {
+    .domain-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .domain-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ── Split sections ── */
+  .split-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .split-copy {
+    display: grid;
+    gap: 20px;
+    align-content: start;
+  }
+
+  .split-visual.stack {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 960px) {
+    .split-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+    }
+
+    .split-grid--reverse .split-copy {
+      order: 0;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .split-grid .split-copy {
+      order: -1;
+    }
+  }
+
+  .points {
+    display: grid;
+    gap: 20px;
+    margin-top: 8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .points li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .points .title-medium {
+    margin-bottom: 2px;
+  }
+
+  .checks {
+    display: grid;
+    gap: 14px;
+    margin-top: 4px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checks li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 16px;
+    color: var(--hx-on-surface-variant);
+  }
+
+  .checks :global(svg) {
+    flex: none;
+    color: var(--hx-success);
+  }
+
+  .avatars {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .avatar-row {
+    display: flex;
+  }
+
+  .avatar-row img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--hx-gradient-mid);
+  }
+
+  .avatar-row img + img {
+    margin-left: -10px;
+  }
+
+  /* ── Programs ── */
+  .program-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .program-card {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 24px;
+  }
+
+  .program-card .icon-bubble {
+    margin-bottom: 8px;
+  }
+
+  @media (min-width: 860px) {
+    .program-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .program-pills {
+    display: grid;
+    gap: 14px;
+    margin-top: 32px;
+  }
+
+  .program-pills ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .program-pills .hx-pill {
+    color: var(--hx-on-surface-variant);
+    font-size: 14px;
+  }
+
+  /* ── Training techniques ── */
+  .technique-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .technique-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .technique-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .technique {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 24px;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 100ms ease-out, border-color var(--hx-base) var(--hx-ease-standard);
+  }
+
+  .technique:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+  }
+
+  .technique:active {
+    transform: scale(0.97);
+  }
+
+  .technique-badge {
+    display: inline-grid;
+    place-items: center;
+    justify-self: start;
+    min-width: 48px;
+    height: 48px;
+    padding-inline: 6px;
+    margin-bottom: 4px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    color: var(--accent);
+    font-family: var(--hx-font-display);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .technique-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 6px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .technique-link {
+    margin-top: 28px;
+  }
+
+  .technique-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  /* ── Insights ── */
+  .coach {
+    display: grid;
+    gap: 10px;
+  }
+
+  .coach-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+  }
+
+  .coach-head :global(svg) {
+    color: var(--hx-primary);
+  }
+
+  .coach p {
+    font-size: 15px;
+    color: var(--hx-on-surface-variant);
+  }
+
+  .coach-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--hx-primary-text);
+  }
+
+  /* ── AI ── */
+  .ai-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .ai-copy {
+    display: grid;
+    gap: 20px;
+  }
+
+  .ai-visual {
+    width: 100%;
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 960px) {
+    .ai-grid {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 72px;
+    }
+  }
+
+  /* ── Web ── */
+  .window-wrap {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    padding-bottom: 24px;
+  }
+
+  .window-wrap :global(.window) {
+    zoom: 0.3;
+  }
+
+  @media (min-width: 480px) {
+    .window-wrap :global(.window) { zoom: 0.4; }
+  }
+
+  @media (min-width: 640px) {
+    .window-wrap :global(.window) { zoom: 0.55; }
+  }
+
+  @media (min-width: 860px) {
+    .window-wrap :global(.window) { zoom: 0.72; }
+  }
+
+  @media (min-width: 1100px) {
+    .window-wrap :global(.window) { zoom: 0.9; }
+  }
+
+  @media (min-width: 1240px) {
+    .window-wrap :global(.window) { zoom: 1; }
+  }
+
+  .platforms,
+  .stores {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .platforms .hx-pill,
+  .stores .hx-pill {
+    color: var(--hx-on-surface-variant);
+    font-size: 14px;
+  }
+
+  .platform-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--hx-fast) ease;
+  }
+
+  .platform-link:hover {
+    color: var(--hx-primary-text);
+  }
+
+  /* ── Watch CTA Banner ── */
+  .watch-cta-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 48px;
+    padding: 24px 32px;
+    border-radius: var(--hx-radius-xl, 28px);
+    background: linear-gradient(135deg, rgba(22, 30, 46, 0.8) 0%, rgba(10, 132, 255, 0.08) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .watch-cta-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--hx-on-surface);
+    margin: 0 0 4px;
+  }
+
+  .watch-cta-sub {
+    font-size: 14px;
+    color: var(--hx-secondary);
+    margin: 0;
+  }
+
+  /* ── Privacy ── */
+  .privacy-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .privacy-card {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 24px;
+  }
+
+  .privacy-card .icon-bubble {
+    margin-bottom: 8px;
+  }
+
+  .privacy-card h3 {
+    font-size: 19px;
+  }
+
+  @media (min-width: 640px) {
+    .privacy-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .privacy-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .privacy-link {
+    margin-top: 28px;
+  }
+
+  .privacy-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+
+  /* ── FAQ ── */
+  .faq-grid {
+    display: grid;
+    gap: 8px;
+  }
+
+  @media (min-width: 960px) {
+    .faq-grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 72px;
+      align-items: start;
+    }
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  /* Styled like the nutrition meal accordion. */
+  .faq {
+    border-radius: 28px;
+    background: var(--hx-surface-lowest);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px 18px 24px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--hx-on-surface);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq :global(.faq-chevron) {
+    flex: none;
+    color: var(--hx-secondary);
+    transition: transform 220ms var(--hx-ease-standard);
+  }
+
+  .faq[open] :global(.faq-chevron) {
+    transform: rotate(180deg);
+  }
+
+  .faq p {
+    padding: 0 24px 20px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── CTA ── */
+  .cta-card {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    padding: clamp(32px, 6vw, 64px) 24px;
+    text-align: center;
+  }
+</style>

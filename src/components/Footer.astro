@@ -1,0 +1,122 @@
+---
+import LogoMark from './LogoMark.astro';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      <div class="about">
+        <a class="brand" href="/" aria-label="Herculex home">
+          <LogoMark size={30} class="brand-mark" />
+          <span>Herculex</span>
+        </a>
+        <p class="body-small">
+          Training, nutrition, fasting and recovery — in one app, on your phone and on the web.
+        </p>
+      </div>
+
+      <nav aria-label="Product">
+        <p class="micro-label">Product</p>
+        <ul role="list">
+          <li><a href={site.appUrl}>Open web app</a></li>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/#programs">Programs</a></li>
+          <li><a href="/training-techniques">Training techniques</a></li>
+          <li><a href="/#ai">Herculex AI</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Legal">
+        <p class="micro-label">Legal</p>
+        <ul role="list">
+          <li><a href="/privacy">Privacy policy</a></li>
+          <li><a href="/terms">Terms of service</a></li>
+          <li><a href="/delete-account">Delete your account</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Help">
+        <p class="micro-label">Help</p>
+        <ul role="list">
+          <li><a href="/support">Support</a></li>
+          <li><a href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <p class="legal body-small">
+      © {year} {site.publisher}. Herculex is not a medical device and does not give medical advice.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: 56px 40px;
+    border-top: 1px solid color-mix(in srgb, var(--hx-outline-variant) 40%, transparent);
+  }
+
+  .grid {
+    display: grid;
+    gap: 40px 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 12px;
+    max-width: 320px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--hx-on-surface);
+    font-family: var(--hx-font-display);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    text-decoration: none;
+  }
+
+  .brand :global(.brand-mark) {
+    color: var(--hx-primary);
+  }
+
+  nav ul {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav a {
+    color: var(--hx-on-surface-variant);
+    font-size: 15px;
+    overflow-wrap: anywhere;
+  }
+
+  nav a:hover {
+    color: var(--hx-on-surface);
+  }
+
+  .legal {
+    margin-top: 48px;
+  }
+
+  @media (min-width: 860px) {
+    .grid {
+      grid-template-columns: 1.6fr repeat(3, 1fr);
+    }
+
+    .about {
+      grid-column: auto;
+    }
+  }
+</style>

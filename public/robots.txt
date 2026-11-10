@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://herculex.app/sitemap-index.xml

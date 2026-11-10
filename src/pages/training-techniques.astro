@@ -1,0 +1,411 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { setTypes, setTypeCategories, trainingTerms, type SetTypeCategory } from '../data/set-types';
+
+const categories = (Object.keys(setTypeCategories) as SetTypeCategory[]).map((key) => ({
+  key,
+  ...setTypeCategories[key],
+  items: setTypes.filter((t) => t.category === key),
+}));
+
+const factor = (value: number) => `${value.toLocaleString('en', { maximumFractionDigits: 2 })}×`;
+---
+
+<BaseLayout
+  title="Training techniques"
+  description="What a drop set, myo reps, rest-pause, down sets, partials and every other set type is — how to do it, when to use it and how Herculex logs it."
+>
+  <section class="container guide">
+    <header class="section-head">
+      <p class="micro-label" style="color: var(--hx-training)">Training techniques</p>
+      <h1>Drop sets, myo reps and every other set type, explained.</h1>
+      <p class="lead">
+        Herculex logs {setTypes.length} kinds of set. Here is what each one is, how to do it, when it is worth using
+        and how the app counts it towards your volume and recovery.
+      </p>
+    </header>
+
+    <nav class="index" aria-label="Techniques">
+      {categories.map((c) => (
+        <div class="index-group">
+          <p class="micro-label">{c.title}</p>
+          <ul role="list">
+            {c.items.map((t) => (
+              <li>
+                <a class="hx-pill index-pill" style={`--accent: ${t.accent}`} href={`#${t.id}`}>
+                  <span class="index-badge">{t.badge}</span>{t.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+
+    {categories.map((c) => (
+      <section class="category" aria-labelledby={`cat-${c.key}`}>
+        <div class="category-head">
+          <span class="icon-bubble accent-training"><Icon name={c.icon} /></span>
+          <div>
+            <h2 id={`cat-${c.key}`}>{c.title}</h2>
+            <p class="body-small">{c.blurb}</p>
+          </div>
+        </div>
+
+        <div class="cards">
+          {c.items.map((t) => (
+            <article id={t.id} class="hx-card hx-card--accent technique" style={`--accent: ${t.accent}`}>
+              <header class="technique-head">
+                <span class="badge" aria-hidden="true">{t.badge}</span>
+                <div>
+                  <h3>{t.label}</h3>
+                  <p class="short">{t.short}</p>
+                </div>
+              </header>
+
+              <p class="what">{t.what}</p>
+
+              <h4>How to do it</h4>
+              <ol class="steps">
+                {t.how.map((step) => <li>{step}</li>)}
+              </ol>
+
+              <h4>When to use it</h4>
+              <p>{t.when}</p>
+
+              {t.watch && (
+                <p class="watch">
+                  <Icon name="info_outlined" size={20} />
+                  <span><strong>Watch out.</strong> {t.watch}</span>
+                </p>
+              )}
+
+              <div class="in-app">
+                <p class="micro-label">In Herculex</p>
+                <p>{t.inHerculex}</p>
+                <ul class="factors" role="list">
+                  <li><span>Tonnage</span><strong>{factor(t.volume)}</strong></li>
+                  <li><span>CNS load</span><strong>{factor(t.cns)}</strong></li>
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="terms" aria-labelledby="terms-title">
+      <div class="category-head">
+        <span class="icon-bubble accent-training"><Icon name="menu_book_rounded" /></span>
+        <div>
+          <h2 id="terms-title">Words used above</h2>
+          <p class="body-small">The short version of the terms these techniques lean on.</p>
+        </div>
+      </div>
+      <dl class="hx-card term-list">
+        {trainingTerms.map((t) => (
+          <div>
+            <dt>{t.term}</dt>
+            <dd>{t.meaning}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <div class="hx-card hx-card--accent cta">
+      <div>
+        <h2>Try them in a workout.</h2>
+        <p class="lead">
+          Tap the set number in an active workout to switch a set to any of these types. The same guide is in the app,
+          in the exercise library and next to the set-type picker.
+        </p>
+      </div>
+      <a class="hx-btn hx-btn--primary" href={site.appUrl}>Open web app <Icon name="arrow_forward_rounded" /></a>
+    </div>
+
+    <p class="note body-small">
+      Herculex gives fitness guidance, not medical advice. Intensity techniques are demanding: build up gradually, use
+      a spotter where it matters, and stop if something hurts.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .guide {
+    padding-block: clamp(40px, 6vw, 72px) clamp(64px, 8vw, 112px);
+  }
+
+  .guide h1 {
+    font-size: clamp(36px, 5vw, 56px);
+  }
+
+  /* ── Index ── */
+  .index {
+    display: grid;
+    gap: 20px;
+    margin-bottom: clamp(40px, 6vw, 72px);
+    padding: 20px;
+    border-radius: var(--hx-radius-xl);
+    background: var(--hx-surface-lowest);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .index-group {
+    display: grid;
+    gap: 10px;
+  }
+
+  .index-group ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .index-pill {
+    color: var(--hx-on-surface-variant);
+    text-decoration: none;
+    transition: border-color var(--hx-base) var(--hx-ease-standard), color var(--hx-base) var(--hx-ease-standard);
+  }
+
+  .index-pill:hover {
+    text-decoration: none;
+    border-color: var(--accent);
+    color: var(--hx-on-surface);
+  }
+
+  .index-badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 26px;
+    height: 20px;
+    padding-inline: 5px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
+
+  /* ── Categories ── */
+  .category,
+  .terms {
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .category-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .category-head h2 {
+    font-size: clamp(26px, 3.4vw, 36px);
+  }
+
+  .cards {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 860px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+      align-items: start;
+    }
+  }
+
+  /* ── Technique card ── */
+  .technique {
+    display: grid;
+    gap: 12px;
+    padding: 24px;
+    /* The sticky header is 72px tall; keep anchored cards clear of it. */
+    scroll-margin-top: 96px;
+  }
+
+  .technique:target {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .technique-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .badge {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    min-width: 48px;
+    height: 48px;
+    padding-inline: 6px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    color: var(--accent);
+    font-family: var(--hx-font-display);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .technique h3 {
+    font-size: 24px;
+  }
+
+  .short {
+    margin-top: 2px;
+    color: var(--hx-on-surface-variant);
+    font-weight: 500;
+  }
+
+  .technique h4 {
+    margin-top: 6px;
+    font-family: var(--hx-font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--hx-secondary);
+  }
+
+  .technique p,
+  .technique li {
+    color: var(--hx-on-surface-variant);
+    line-height: 1.6;
+  }
+
+  .what {
+    color: var(--hx-on-surface);
+  }
+
+  .steps {
+    display: grid;
+    gap: 8px;
+    padding-left: 22px;
+  }
+
+  .steps li::marker {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .watch {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: var(--hx-radius-md, 14px);
+    background: color-mix(in srgb, var(--hx-warning) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--hx-warning) 35%, transparent);
+  }
+
+  .watch :global(svg) {
+    flex: none;
+    margin-top: 2px;
+    color: var(--hx-warning);
+  }
+
+  .watch strong {
+    color: var(--hx-on-surface);
+  }
+
+  .in-app {
+    display: grid;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--hx-surface-container);
+    border: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .factors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .factors li {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    font-size: 13px;
+  }
+
+  .factors span {
+    color: var(--hx-secondary);
+  }
+
+  .factors strong {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Terms ── */
+  .term-list {
+    display: grid;
+    gap: 0;
+    padding: 8px 24px;
+  }
+
+  .term-list > div {
+    display: grid;
+    gap: 4px;
+    padding-block: 16px;
+  }
+
+  .term-list > div + div {
+    border-top: 1px solid color-mix(in srgb, var(--hx-outline-variant) 30%, transparent);
+  }
+
+  .term-list dt {
+    font-weight: 700;
+    color: var(--hx-on-surface);
+  }
+
+  .term-list dd {
+    color: var(--hx-on-surface-variant);
+    line-height: 1.6;
+  }
+
+  @media (min-width: 760px) {
+    .term-list > div {
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+    }
+  }
+
+  /* ── CTA ── */
+  .cta {
+    display: grid;
+    gap: 20px;
+    align-items: center;
+    padding: clamp(24px, 4vw, 40px);
+  }
+
+  .cta h2 {
+    margin-bottom: 8px;
+    font-size: clamp(26px, 3.4vw, 36px);
+  }
+
+  @media (min-width: 860px) {
+    .cta {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  .note {
+    margin-top: 24px;
+    max-width: 720px;
+  }
+</style>

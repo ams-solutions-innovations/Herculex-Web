@@ -1,0 +1,42 @@
+---
+// Flutter's determinate CircularProgressIndicator (year2023 style): butt caps,
+// no track gap, starts at 12 o'clock and runs clockwise.
+interface Props {
+  size: number;
+  stroke: number;
+  /** 0–1 */
+  value: number;
+  color: string;
+  track?: string;
+  class?: string;
+}
+
+const { size, stroke, value, color, track = 'var(--hx-surface-variant)', class: className } = Astro.props;
+const center = size / 2;
+const radius = (size - stroke) / 2;
+const circumference = 2 * Math.PI * radius;
+const offset = circumference * (1 - Math.min(Math.max(value, 0), 1));
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox={`0 0 ${size} ${size}`}
+  class={className}
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle cx={center} cy={center} r={radius} fill="none" stroke-width={stroke} style={`stroke: ${track}`} />
+  <circle
+    cx={center}
+    cy={center}
+    r={radius}
+    fill="none"
+    stroke-width={stroke}
+    stroke-linecap="butt"
+    stroke-dasharray={circumference.toFixed(3)}
+    stroke-dashoffset={offset.toFixed(3)}
+    transform={`rotate(-90 ${center} ${center})`}
+    style={`stroke: ${color}`}
+  />
+</svg>

@@ -1,0 +1,25 @@
+{
+  "name": "herculex-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Marketing site for Herculex (herculex.app): landing page, privacy policy, terms and support.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "sync-legal": "node scripts/sync-legal.mjs",
+    "app": "node scripts/serve-app.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.4.2"
+  },
+  "devDependencies": {
+    "@iconify-json/ic": "1.2.4"
+  }
+}

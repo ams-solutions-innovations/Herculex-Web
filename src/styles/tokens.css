@@ -1,0 +1,169 @@
+/*
+ * Herculex design tokens, ported 1:1 from the Flutter app:
+ *   colours  lib/design_system/tokens/hx_colors.dart   (Classic Blue theme)
+ *   type     lib/design_system/theme/app_theme.dart
+ *   spacing  HxSpace · radius HxRadius · motion HxMotion · glass HxGlass
+ * Flutter dp = CSS px, and Flutter letterSpacing is in px.
+ * Dark is the default (the app is dark-first); light follows the OS.
+ */
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope-var.woff2') format('woff2-variations'),
+       url('/fonts/manrope-var.woff2') format('woff2');
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/space-grotesk-var.woff2') format('woff2-variations'),
+       url('/fonts/space-grotesk-var.woff2') format('woff2');
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* ── Colour: Classic Blue, dark ─────────────────────────────── */
+  --hx-gradient-top: #0d1b2a;
+  --hx-gradient-mid: #091322;
+  --hx-gradient-bottom: #040913;
+  --hx-background: #091322;
+
+  --hx-primary: #0a84ff;
+  --hx-primary-text: #4da3ff;
+  --hx-primary-container: #1c4a7e;
+  --hx-on-primary: #ffffff;
+
+  --hx-on-surface: #ffffff;
+  --hx-on-surface-variant: #cbd5e1;
+  --hx-secondary: #94a3b8;
+  --hx-tertiary: #64748b;
+
+  --hx-surface-container: #161e2e;
+  --hx-surface-lowest: #111824;
+  --hx-surface-variant: #202a3c;
+  --hx-outline: #3b4c69;
+  --hx-outline-variant: #2b374e;
+
+  --hx-training: #0a84ff;
+  --hx-nutrition: #30d158;
+  --hx-fasting: #64d2ff;
+  --hx-recovery: #bf5af2;
+
+  --hx-kcal: #ff453a;
+  --hx-protein: #4da3ff;
+  --hx-carbs: #34c759;
+  --hx-fat: #ffd60a;
+  --hx-fat-text: #ffd60a;
+
+  --hx-success: #30d158;
+  --hx-warning: #ff9f0a;
+  --hx-danger: #ff453a;
+  --hx-quick-add: #ff9f0a;
+  --hx-rpe: #9c27b0;
+
+  --hx-glass-fill: #161e2e;
+  --hx-glass-border: #2b374e;
+  --hx-glass-fill-alpha: 72%;
+  --hx-glass-border-alpha: 50%;
+  --hx-frosted-fill-alpha: 10%;
+  --hx-frosted-border-alpha: 22%;
+  --hx-accent-card-alpha: 16%;
+  --hx-secondary-button: rgb(255 255 255 / 0.06);
+
+  /* ── Spacing (HxSpace) ──────────────────────────────────────── */
+  --hx-x1: 4px;
+  --hx-x2: 8px;
+  --hx-x3: 12px;
+  --hx-x4: 16px;
+  --hx-x5: 20px;
+  --hx-x6: 24px;
+  --hx-x8: 32px;
+  --hx-x10: 40px;
+
+  /* ── Radius (HxRadius) ──────────────────────────────────────── */
+  --hx-radius-sm: 12px;
+  --hx-radius-md: 16px;
+  --hx-radius-lg: 20px;
+  --hx-radius-xl: 28px;
+  --hx-radius-pill: 999px;
+
+  /* ── Motion (HxMotion) ──────────────────────────────────────── */
+  --hx-fast: 120ms;
+  --hx-base: 200ms;
+  --hx-slow: 300ms;
+  --hx-slower: 450ms;
+  --hx-ease-emphasized: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --hx-ease-overshoot: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --hx-ease-standard: cubic-bezier(0.42, 0, 0.58, 1);
+
+  /* ── Type families ──────────────────────────────────────────── */
+  --hx-font-body: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --hx-font-display: 'Space Grotesk', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Layout (web only) ──────────────────────────────────────── */
+  --site-max: 1200px;
+  --site-gutter: 20px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-gutter: 32px;
+  }
+}
+
+/* Classic Blue, light. */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+
+    --hx-gradient-top: #dcebfb;
+    --hx-gradient-mid: #e4effc;
+    --hx-gradient-bottom: #edf4fd;
+    --hx-background: #e4effc;
+
+    --hx-primary: #0a84ff;
+    --hx-primary-text: #0063cc;
+    --hx-primary-container: #d0e3ff;
+    --hx-on-primary: #ffffff;
+
+    --hx-on-surface: #0b1526;
+    --hx-on-surface-variant: #334155;
+    --hx-secondary: #64748b;
+    --hx-tertiary: #94a3b8;
+
+    --hx-surface-container: #ffffff;
+    --hx-surface-lowest: #f5f9ff;
+    --hx-surface-variant: #dde9f7;
+    --hx-outline: #a9c2dc;
+    --hx-outline-variant: #cfe0f3;
+
+    --hx-training: #0a84ff;
+    --hx-nutrition: #1e7a34;
+    --hx-fasting: #0083a8;
+    --hx-recovery: #8036b8;
+
+    --hx-kcal: #e0362c;
+    --hx-protein: #1f6fd6;
+    --hx-carbs: #248a3d;
+    --hx-fat: #d97706;
+    --hx-fat-text: #b45309;
+
+    --hx-success: #1e7a34;
+    --hx-warning: #b36a00;
+    --hx-danger: #c7261c;
+    --hx-quick-add: #cc7a00;
+
+    --hx-glass-fill: #ffffff;
+    --hx-glass-border: #cfe0f3;
+    --hx-glass-fill-alpha: 78%;
+    --hx-glass-border-alpha: 90%;
+    --hx-frosted-fill-alpha: 6%;
+    --hx-frosted-border-alpha: 16%;
+    --hx-accent-card-alpha: 12%;
+    --hx-secondary-button: rgb(0 0 0 / 0.05);
+  }
+}

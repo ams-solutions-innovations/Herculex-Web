@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+const topics = [
+  {
+    icon: 'mail_rounded',
+    title: 'Email us',
+    body: 'Questions, bugs or feedback — we read every message.',
+    href: `mailto:${site.supportEmail}`,
+    cta: site.supportEmail,
+  },
+  {
+    icon: 'privacy_tip_rounded',
+    title: 'Privacy',
+    body: 'What we store, where it lives and how it is protected.',
+    href: '/privacy',
+    cta: 'Read the privacy policy',
+  },
+  {
+    icon: 'delete_rounded',
+    title: 'Delete your account',
+    body: 'Remove your account and all cloud data permanently.',
+    href: '/delete-account',
+    cta: 'How to delete your account',
+  },
+];
+---
+
+<BaseLayout title="Support" description="Get help with Herculex: contact support, privacy questions and account deletion.">
+  <section class="container support">
+    <header class="section-head">
+      <p class="micro-label">Support</p>
+      <h1>How can we help?</h1>
+      <p class="lead">
+        When you write to us, mention your device and app version — and for sync questions, whether you use the
+        phone app, the web app, or both.
+      </p>
+    </header>
+
+    <div class="topics">
+      {topics.map((t) => (
+        <a class="hx-card topic" href={t.href}>
+          <span class="icon-bubble"><Icon name={t.icon} /></span>
+          <h2 class="topic-title">{t.title}</h2>
+          <p>{t.body}</p>
+          <span class="topic-cta">{t.cta} <Icon name="arrow_forward_rounded" size={18} /></span>
+        </a>
+      ))}
+    </div>
+
+    <div class="hx-card note">
+      <Icon name="info_outlined" size={22} />
+      <p>
+        Herculex gives fitness guidance, not medical advice. If something feels wrong during training or a fast,
+        stop and talk to a doctor.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .support {
+    padding-block: clamp(40px, 6vw, 72px) clamp(64px, 8vw, 112px);
+  }
+
+  .support h1 {
+    font-size: clamp(36px, 5vw, 56px);
+  }
+
+  .topics {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 860px) {
+    .topics {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .topic {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 24px;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 100ms ease-out, border-color var(--hx-base) var(--hx-ease-standard);
+  }
+
+  .topic:hover {
+    text-decoration: none;
+    border-color: color-mix(in srgb, var(--hx-primary) 40%, transparent);
+  }
+
+  .topic:active {
+    transform: scale(0.97);
+  }
+
+  .topic .icon-bubble {
+    margin-bottom: 8px;
+  }
+
+  .topic-title {
+    font-family: var(--hx-font-body);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .topic-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: var(--hx-primary-text);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .note {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 24px;
+  }
+
+  .note :global(svg) {
+    flex: none;
+    color: var(--hx-warning);
+  }
+</style>
